@@ -1,0 +1,34 @@
+<div class="container mt-4">
+  <h2 class="mb-4">{{ 'orderHistory.title' | translate }}</h2>
+
+  <div *ngIf="orders.length === 0">
+    <p>{{ 'orderHistory.noOrders' | translate }}</p>
+  </div>
+
+  <div *ngIf="orders.length > 0">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>{{ 'orderHistory.id' | translate }}</th>
+          <th>{{ 'orderHistory.orderDate' | translate }}</th>
+          <th>{{ 'orderHistory.status' | translate }}</th>
+          <th>{{ 'orderHistory.total' | translate }}</th>
+          <th>{{ 'orderHistory.view' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let order of orders">
+          <td>{{ order.id }}</td>
+          <td>{{ order.order_date | date: 'dd/MM/yyyy' }}</td>
+          <td>{{ order.status }}</td>
+          <td>{{ order.total_money | number:'1.0-2' }} USD</td>
+          <td>
+            <button (click)="viewOrderDetail(order.id)" class="btn btn-sm btn-primary">
+              {{ 'orderHistory.viewBtn' | translate }}
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

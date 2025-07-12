@@ -1,0 +1,126 @@
+<div class="custom-container">
+    <!-- Tìm kiếm -->
+    <div class="search-slideshow-wrapper">
+        <!-- Ảnh nền chạy tự động -->
+        <div class="slideshow">
+            <img *ngFor="let img of slideshowImages; let i = index" [src]="img" [class.active]="i === currentSlide"
+                class="slide-img" />
+        </div>
+
+        <!-- Nội dung thanh tìm kiếm -->
+        <div class="search-section">
+            <div class="d-flex justify-content-center">
+                <div class="row align-items-end w-100" style="max-width: 1000px; width: 100%;">
+                    <div class="col-md-10 mb-2">
+                        <input type="text" id="keyword" class="form-control"
+                            [placeholder]="'home.placeholder' | translate" [(ngModel)]="keyword">
+                    </div>
+                    <div class="col-md-2 mb-2">
+                        <label class="d-block">&nbsp;</label>
+                        <button class="btn btn-primary w-100" (click)="searchProducts()">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bộ lọc -->
+    <div class="filter-section mb-4">
+        <div class="row align-items-end">
+            <!-- Danh mục -->
+            <div class="col-md-3 mb-2">
+                <label for="category">{{ 'home.category' | translate }}</label>
+                <select id="category" class="form-control" [(ngModel)]="selectedCategoryId"
+                    (change)="onCategoryChange($event)">
+                    <option [value]="0">{{ 'home.all' | translate }}</option>
+                    <option *ngFor="let category of categories" [value]="category.id">{{ category.name }}</option>
+                </select>
+            </div>
+
+            <!-- Thương hiệu -->
+            <div class="col-md-3 mb-2">
+                <label for="brand">{{ 'home.brand' | translate }}</label>
+                <select id="brand" class="form-control" [(ngModel)]="selectedBrandId" (change)="onBrandChange($event)">
+                    <option [value]="0">{{ 'home.all' | translate }}</option>
+                    <option *ngFor="let brand of brands" [value]="brand.id">{{ brand.name }}</option>
+                </select>
+            </div>
+
+            <!-- Thanh kéo giá -->
+            <div class="col-md-3 mb-2">
+                <div class="price-slider" #slider>
+                    <label for="price">{{ 'home.price' | translate }}</label>
+                    <div class="slider-track"></div>
+                    <div class="slider-range" [ngStyle]="{ left: rangeLeft + '%', right: rangeRight + '%' }"></div>
+
+                    <!-- Thumb min -->
+                    <div class="thumb thumb-left" [ngStyle]="{ left: rangeLeft + '%' }"
+                        (mousedown)="startDrag('min', $event)" (touchstart)="startDrag('min', $event)"></div>
+
+                    <!-- Thumb max -->
+                    <div class="thumb thumb-right" [ngStyle]="{ left: (100 - rangeRight) + '%' }"
+                        (mousedown)="startDrag('max', $event)" (touchstart)="startDrag('max', $event)"></div>
+
+                    <div class="price-values">
+                        <span>${{ tempMin }}</span>
+                        <span>${{ tempMax }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nút Bỏ lọc -->
+            <div class="col-md-3 mb-2">
+                <button class="btn btn-outline-secondary w-100" (click)="resetFilters()">
+                    {{ 'home.resetFilter' | translate }}
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Danh sách sản phẩm -->
+    <div class="row">
+        <div class="col-6 col-sm-6 col-md-4 col-lg-3 mb-4" *ngFor="let product of products">
+            <div class="product-item" (click)="onProductClick(product.id)">
+                <img *ngIf="product.url" [src]="product.url + '?v=' + timestamp" alt="Product Image"
+                    class="product-image">
+                <div class="product-bottom">
+                    <h3 class="product-name">{{ product.name }}</h3>
+
+                    <p class="product-price">{{ 'home.priceLabel' | translate }} ${{ product.price }}</p>
+                    <button class="btn btn-add-to-cart w-100 mt-2"
+                        (click)="addToCart(product); $event.stopPropagation()">
+                        {{ 'home.addToCart' | translate }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-center">
+        <nav class="d-inline-block" aria-label="Page navigation">
+            <ul class="pagination">
+                <li class="page-item" *ngIf="currentPage > 0">
+                    <a class="page-link" (click)="onPageChange(1)">{{ 'home.first' | translate }}</a>
+                </li>
+                <li class="page-item" *ngIf="currentPage > 0">
+                    <a class="page-link prev-page" (click)="onPageChange(currentPage - 1)">{{ 'home.previous' |
+                        translate }}</a>
+                </li>
+                <ng-container *ngFor="let page of visiblePages ">
+                    <li class="page-item" [ngClass]="{'active': page === currentPage}">
+                        <a class="page-link" (click)="onPageChange(page)">{{ page }}</a>
+                    </li>
+                </ng-container>
+                <li class="page-item" *ngIf="currentPage < totalPages -1">
+                    <a class="page-link next-page" (click)="onPageChange(currentPage + 1)">{{ 'home.next' | translate
+                        }}</a>
+                </li>
+                <li class="page-item" *ngIf="currentPage < totalPages -1">
+                    <a class="page-link" (click)="onPageChange(totalPages)">{{ 'home.last' | translate }}</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>

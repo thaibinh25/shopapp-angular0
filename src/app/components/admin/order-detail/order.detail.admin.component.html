@@ -1,0 +1,73 @@
+<div class="order-detail-admin container my-4">
+  <h2 class="mb-4">🧾 Order Details - Admin</h2>
+
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-primary text-white">
+      Order Information
+    </div>
+    <div class="card-body row">
+      <div class="col-md-6">
+        <p><strong>Order ID:</strong> {{ orderResponse.id }}</p>
+        <p><strong>User ID:</strong> {{ orderResponse.user_id }}</p>
+        <p><strong>Full Name:</strong> {{ orderResponse.fullname }}</p>
+        <p><strong>Email:</strong> {{ orderResponse.email }}</p>
+        <p><strong>Phone:</strong> {{ orderResponse.phone_number }}</p>
+        <p><strong>Address:</strong> {{ orderResponse.address }}</p>
+        <p><strong>Note:</strong> {{ orderResponse.note }}</p>
+        <p><strong>Order Date:</strong> {{ orderResponse.order_date | date }}</p>
+      </div>
+      <div class="col-md-6">
+        <p><strong>Shipping Method:</strong> {{ orderResponse.shipping_method }}</p>
+        <p><strong>Shipping Date:</strong> {{ orderResponse.shipping_date | date }}</p>
+        <p><strong>Shipping Address:</strong> {{ orderResponse.shipping_address }}</p>
+        <p><strong>Payment Method:</strong> {{ orderResponse.payment_method }}</p>
+        <p><strong>Total Money:</strong> {{ orderResponse.total_money | currency:'USD':'symbol':'1.2-2' }}</p>
+
+        <div class="form-group mt-3">
+          <label for="statusSelect"><strong>Status:</strong></label>
+          <select class="form-control" id="statusSelect" [(ngModel)]="orderResponse.status">
+            <option value="pending">Pending</option>
+            <option value="processing">Processing</option>
+            <option value="shipped">Shipped</option>
+            <option value="delivered">Delivered</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-secondary text-white">
+      Product Details
+    </div>
+    <div class="card-body p-0">
+      <table class="table table-hover table-bordered m-0">
+        <thead class="thead-light">
+          <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <!--<th>Total</th>-->
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let detail of orderResponse.order_details">
+            <td>
+              <div class="d-flex align-items-center">
+                <img [src]="detail.product.thumbnail" alt="thumb" class="img-thumbnail mr-2" style="width: 60px; height: 60px;">
+                {{ detail.product.name }}
+              </div>
+            </td>
+            <td>{{ detail.product.price | currency }}</td>
+            <td>{{ detail.number_of_products }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="text-end">
+    <button class="btn btn-success" (click)="saveOrder()">💾 Save Changes</button>
+  </div>
+</div>

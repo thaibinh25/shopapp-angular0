@@ -1,0 +1,82 @@
+<div class="container">
+    <div class="intro-section">
+      <h1>{{ 'orderDetail.title' | translate }}</h1>
+      <p>{{ 'orderDetail.successMessage' | translate }}</p>
+    </div>
+  
+    <div *ngIf="orderResponse" class="row">
+      <!-- Thông tin người nhận -->
+      <div class="col-md-6">
+        <h2 class="product-header">{{ 'orderDetail.recipientInfo' | translate }}</h2>
+  
+        <div class="mb-3">
+          <p class="form-label">{{ 'orderDetail.fullname' | translate }}: {{ orderResponse.fullname }}</p>
+        </div>
+        <div class="mb-3">
+          <p class="form-label">{{ 'orderDetail.email' | translate }}: {{ orderResponse.email }}</p>
+        </div>
+        <div class="mb-3">
+          <p class="form-label">{{ 'orderDetail.phone' | translate }}: {{ orderResponse.phone_number }}</p>
+        </div>
+        <div class="mb-3">
+          <p class="form-label">{{ 'orderDetail.address' | translate }}: {{ orderResponse.address }}</p>
+        </div>
+        <div class="mb-3">
+          <p class="form-label">{{ 'orderDetail.note' | translate }}: {{ orderResponse.note }}</p>
+        </div>
+        <div class="mb-3">
+          <p class="form-label">{{ 'orderDetail.shippingMethod' | translate }}: {{ orderResponse.shipping_method }}</p>
+        </div>
+        <div class="mb-3">
+          <p class="form-label">{{ 'orderDetail.paymentMethod' | translate }}: {{ orderResponse.payment_method }}</p>
+        </div>
+        <div class="mb-3">
+          <p class="form-label">
+            {{ 'orderDetail.orderDate' | translate }}: {{ orderResponse.order_date | date:'dd/MM/yyyy' }}
+          </p>
+        </div>
+        <div class="mb-3">
+          <p class="form-label">
+            {{ 'orderDetail.shippingDate' | translate }}: {{ orderResponse.shipping_date | date:'dd/MM/yyyy' }}
+          </p>
+        </div>
+      </div>
+  
+      <!-- Sản phẩm đã đặt -->
+      <div class="col-md-6">
+        <h2 class="product-order">{{ 'orderDetail.orderedProducts' | translate }}</h2>
+        <table>
+          <thead>
+            <tr>
+              <th class="text-start">{{ 'orderDetail.product' | translate }}</th>
+              <th>{{ 'orderDetail.quantity' | translate }}</th>
+              <th>{{ 'orderDetail.unitPrice' | translate }}</th>
+              <th>{{ 'orderDetail.totalPrice' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of orderResponse.order_details">
+              <td>
+                <div class="product-info">
+                  <img [src]="item.product.thumbnail" alt="Product Image" class="product-image">
+                  <div class="product-name-wrapper">
+                    <span class="product-name">{{ item.product.name }}</span>
+                  </div>
+                </div>
+              </td>
+              <td>{{ item.number_of_products }}</td>
+              <td>{{ item.price | number:'1.2-2' }}</td>
+              <td>{{ item.total_money | number:'1.2-2' }}</td>
+            </tr>
+          </tbody>
+        </table>
+  
+        <div class="text-start mt-3">
+          <h4 class="header-text text-end">
+            {{ 'orderDetail.totalMoney' | translate }}: {{ orderResponse.total_money | number:'1.2-2' }}
+          </h4>
+        </div>
+      </div>
+    </div>
+  </div>
+  

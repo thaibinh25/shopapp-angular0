@@ -1,0 +1,70 @@
+<div class="profile-container">
+  <!-- Tabs chọn mục -->
+  <div class="tab-menu">
+    <button (click)="activeTab = 'info'" [class.active]="activeTab === 'info'">{{ 'profile.infoTab' | translate }}</button>
+    <button (click)="activeTab = 'contact'" [class.active]="activeTab === 'contact'">{{ 'profile.contactTab' | translate }}</button>
+    <button (click)="activeTab = 'password'" [class.active]="activeTab === 'password'">{{ 'profile.passwordTab' | translate }}</button>
+  </div>
+
+  <!-- Nội dung từng tab -->
+  <div class="tab-content">
+
+    <!-- Tab 1: Thông tin cá nhân -->
+    <div class="tab-pane" [class.active]="activeTab === 'info'" *ngIf="activeTab === 'info'">
+      <p><strong>{{ 'profile.fullname' | translate }}:</strong> {{ user.fullname }}</p>
+      <p><strong>{{ 'profile.dob' | translate }}:</strong> {{ user.dateOfBirth | date: 'dd/MM/yyyy' }}</p>
+    </div>
+
+    <!-- Tab 2: Liên hệ -->
+    <div *ngIf="activeTab === 'contact'">
+      <form [formGroup]="userContactForm" (ngSubmit)="updateContactInfo()">
+        <label>{{ 'profile.address' | translate }}:</label>
+        <input formControlName="address" type="text" [readonly]="!isEditingContact" />
+        <div *ngIf="userContactForm.get('address')?.invalid && userContactForm.get('address')?.touched">
+          <small style="color:red;">{{ 'profile.addressRequired' | translate }}</small>
+        </div>
+
+        <label>{{ 'profile.phone' | translate }}:</label>
+        <input formControlName="phone_number" type="text" [readonly]="!isEditingContact" />
+        <div *ngIf="userContactForm.get('phone_number')?.invalid && userContactForm.get('phone_number')?.touched">
+          <small style="color:red;">{{ 'profile.phoneInvalid' | translate }}</small>
+        </div>
+
+        <button type="button" *ngIf="!isEditingContact" (click)="toggleEditContact()">{{ 'profile.edit' | translate }}</button>
+        <button type="submit" *ngIf="isEditingContact">{{ 'profile.saveChanges' | translate }}</button>
+      </form>
+    </div>
+
+    <!-- Tab 3: Đổi mật khẩu -->
+    <div *ngIf="activeTab === 'password'">
+      <h2>{{ 'profile.passwordChange' | translate }}</h2>
+      <form [formGroup]="changePasswordForm" (ngSubmit)="updatePassword()">
+        <label>{{ 'profile.currentPassword' | translate }}:</label>
+        <input type="password" formControlName="current_password" />
+        <div *ngIf="changePasswordForm.get('current_password')?.invalid && changePasswordForm.get('current_password')?.touched">
+          <small style="color:red;">{{ 'profile.currentPasswordRequired' | translate }}</small>
+        </div>
+
+        <label>{{ 'profile.newPassword' | translate }}:</label>
+        <input type="password" formControlName="new_password" />
+        <div *ngIf="changePasswordForm.get('new_password')?.invalid && changePasswordForm.get('new_password')?.value">
+          <small style="color:red;">{{ 'profile.newPasswordTooShort' | translate }}</small>
+        </div>
+
+        <label>{{ 'profile.confirmPassword' | translate }}:</label>
+        <input type="password" formControlName="confirm_password" />
+        <div *ngIf="changePasswordForm.get('confirm_password')?.value && changePasswordForm.errors?.['passwordMismatch']">
+          <small style="color:red;">{{ 'profile.passwordMismatch' | translate }}</small>
+        </div>
+        <div *ngIf="!changePasswordForm.errors?.['passwordMismatch'] && changePasswordForm.get('confirm_password')?.touched">
+          <small style="color:green;">✔ {{ 'profile.passwordMatch' | translate }}</small>
+        </div>
+
+        <button type="submit" [disabled]="changePasswordForm.invalid"
+          [ngStyle]="{ opacity: changePasswordForm.invalid ? 0.5 : 1 }">
+          {{ 'profile.updatePassword' | translate }}
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

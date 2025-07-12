@@ -1,0 +1,199 @@
+@use '../../styles/shared-styles' as *; // Nhập các biến, mixins hoặc chức năng từ file shared-styles.scss
+
+// Định nghĩa container chung cho trang
+.container {
+  color: #2c2a29; // Màu chữ tối cho nền sáng (đảm bảo văn bản dễ đọc)
+  padding: 0px 0px 80px; // Khoảng cách từ trên xuống dưới, giúp tránh bị dính với các thành phần khác
+}
+
+// Phần giới thiệu sản phẩm
+.intro-section {
+  padding: 20px; // Khoảng cách xung quanh nội dung phần giới thiệu
+  text-align: center; // Căn giữa phần văn bản
+  font-size: 1.5rem; // Kích thước chữ lớn dễ đọc
+}
+
+// Phần carousel (chạy ảnh) của sản phẩm
+.carousel-inner {
+  
+  // Các ảnh trong carousel
+  .carousel-item {
+    opacity: 0; // Ban đầu các ảnh trong carousel sẽ ẩn
+    transition: opacity 0.1s ease-in-out; // Khi chuyển ảnh, opacity thay đổi mượt mà trong 0.1s
+  }
+
+  // Ảnh hiện tại (được active)
+  .carousel-item.active {
+    opacity: 1; // Ảnh hiện tại sẽ có độ sáng đầy đủ
+  }
+
+  // Định nghĩa kiểu cho ảnh sản phẩm trong carousel
+  .product-image {
+    width: 100%; // Ảnh sẽ chiếm hết chiều rộng của container
+    height: 500px; 
+    border-radius: 10px; // Bo góc cho ảnh
+    object-fit: contain; // Đảm bảo ảnh không bị méo, cắt đúng tỷ lệ
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); // Bóng đổ nhẹ cho ảnh tạo chiều sâu
+  }
+}
+
+// Phần thumbnail (hình thu nhỏ) của ảnh sản phẩm
+.thumbnail-container {
+  display: flex; // Đảm bảo các thumbnail nằm ngang
+  justify-content: space-between; // Khoảng cách đều giữa các thumbnail
+  gap: 10px; // Khoảng cách giữa các thumbnail
+  margin-top: 20px; // Khoảng cách giữa phần thumbnail và phần trên
+}
+
+.thumbnail-item {
+  width: 120px; // Chiều rộng của mỗi thumbnail
+  height: 120px; // Chiều cao của mỗi thumbnail
+  margin-top: 10px; // Khoảng cách phía trên thumbnail
+  border-radius: 10px; // Bo góc cho thumbnail
+  overflow: hidden; // Cắt phần ảnh ngoài khung thumbnail
+  cursor: pointer; // Thêm hiệu ứng con trỏ khi hover vào thumbnail
+  transition: transform 0.3s ease; // Thêm hiệu ứng phóng to khi hover thumbnail
+
+  // Khi hover vào thumbnail
+  &:hover img {
+    transform: scale(1.1); // Phóng to ảnh khi hover
+  }
+
+  // Khi thumbnail đang được chọn
+  &.active {
+    border: 4px solid black; // Thêm viền đậm xung quanh ảnh thumbnail đang chọn
+    transform: scale(1.1); // Tạo hiệu ứng phóng to khi thumbnail được chọn
+  }
+
+  img {
+    width: 100%; // Ảnh thumbnail chiếm hết diện tích của container
+    height: 100%; // Ảnh thumbnail chiếm hết diện tích của container
+    object-fit: contain; // Đảm bảo ảnh không bị méo, cắt đúng tỷ lệ
+  }
+}
+
+// Phần chi tiết sản phẩm
+.product-details {
+  padding: 20px; // Khoảng cách xung quanh nội dung chi tiết sản phẩm
+  background-color: #f5f5f5; // Nền sáng cho phần chi tiết sản phẩm
+
+  // Tiêu đề sản phẩm
+  h2 {
+    color: #2c2a29; // Màu chữ tối cho tiêu đề
+  }
+
+  // Phần giá sản phẩm
+  .product-price {
+    color: red; // Màu đỏ cho giá sản phẩm
+    font-size: 1.5rem; // Kích thước chữ lớn hơn cho giá sản phẩm
+    font-weight: bold; // Làm đậm giá tiền
+  }
+
+  // Các nút hành động (thêm vào giỏ hàng, mua ngay)
+  .product-actions {
+    margin-top: 20px;
+
+    .btn {
+      margin-right: 10px; // Khoảng cách giữa các nút
+    }
+  }
+
+  // Phần điều chỉnh số lượng sản phẩm
+  .product-quantity {
+    display: flex; // Đảm bảo các thành phần nằm ngang
+    align-items: center; // Căn giữa các thành phần trong phần số lượng
+    justify-content: flex-start; // Canh bên trái
+    margin-top: 20px;
+
+    .border-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #ccc; // Viền mỏng xung quanh khung số lượng
+      border-radius: 8px; // Bo góc cho khung điều chỉnh số lượng
+      padding: 0 10px; // Khoảng cách trong khung
+      background-color: #f9fafb; // Nền sáng cho phần điều chỉnh số lượng
+      gap: 10px; // Khoảng cách giữa các thành phần trong khung
+
+      button {
+        background-color: transparent; // Nền trong suốt cho nút
+        border: none; // Bỏ viền cho nút
+        color: #374151; // Màu chữ của nút
+        font-size: 1.25rem; // Kích thước chữ lớn cho nút
+        cursor: pointer; // Hiệu ứng con trỏ khi hover
+        transition: color 0.3s ease; // Hiệu ứng chuyển màu khi hover vào nút
+
+        &:hover {
+          color: #1f2937; // Màu thay đổi khi hover
+        }
+      }
+
+      input {
+        width: 50px; // Chiều rộng của input
+        background-color: transparent; // Nền trong suốt cho input
+        border: none; // Bỏ viền cho input
+        text-align: center; // Căn giữa số trong input
+        color: #2c2a29; // Màu chữ tối cho input
+        font-size: 1.25rem; // Kích thước chữ lớn cho input
+        padding: 5px; // Khoảng cách trong input
+        outline: none; // Bỏ viền khi focus vào input
+        font-weight: bold; // Làm đậm chữ trong input
+      }
+    }
+  }
+  
+}
+
+
+// 👉 Responsive Design
+@media screen and (max-width: 768px) {
+  .product-image {
+    height: auto; // ❗ dùng chiều cao tự động theo tỉ lệ
+    max-height: 250px; // ❗ không quá cao
+    object-fit: contain; // ❗ tránh bị cắt ảnh
+    width: 100%; // ✅ đảm bảo luôn full chiều ngang container
+  }
+  
+
+  .thumbnail-item {
+    width: 80px;
+    height: 80px;
+  }
+
+  .intro-section {
+    font-size: 1.2rem;
+    padding: 10px;
+  }
+
+  .product-price {
+    font-size: 1.2rem;
+  }
+
+  .product-quantity input {
+    width: 40px;
+    font-size: 1rem;
+  }
+
+  .border-wrapper button {
+    font-size: 1rem;
+  }
+
+  .product-actions .btn {
+    font-size: 0.9rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .thumbnail-container {
+    justify-content: center;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .product-image {
+    max-height: 300px;
+  }
+  .thumbnail-item {
+    width: 60px;
+    height: 60px;
+  }
+}

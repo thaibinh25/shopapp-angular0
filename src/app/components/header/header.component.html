@@ -1,0 +1,153 @@
+<!--<header>
+  <nav class="navbar navbar-expand-lg navbar-light bg-dark">
+    <div class="container d-flex justify-content-between align-items-center">
+      <!-- Logo 
+      <div class="ttb-logo" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+        (click)="onNavLinkClick(0)">
+        <span class="letter">T</span>
+        <span class="letter">T</span>
+        <span class="letter">B</span>
+      </div>
+
+      <!-- Burger button for mobile 
+      <button class="navbar-toggler d-lg-none" type="button" (click)="isMobileMenuOpen = !isMobileMenuOpen">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Content collapses on mobile 
+      <div class="collapse navbar-collapse justify-content-between align-items-center"
+        [ngClass]="{ 'show': isMobileMenuOpen }">
+
+        <!-- Promo 
+        <div class="promo-message d-none d-lg-block mx-auto">
+          🎉 <strong>{{ 'header.freeship' | translate }}</strong> 🎉
+        </div>
+
+        <!-- Các nút bên phải 
+        <ul class="navbar-nav ms-auto">
+          <!-- Notification 
+          <li class="nav-item notification-icon" (click)="toggleNotificationPopover()">
+            <span class="icon-bell-wrapper">
+              <span class="icon-bell">🔔</span>
+              <span *ngIf="unreadCount > 0" class="badge">{{ unreadCount }}</span>
+            </span>
+            <div *ngIf="showPopover" class="notification-popover">
+              <div *ngFor="let noti of notifications" class="notification-item" [class.unread]="!noti.read"
+                (click)="viewNotificationDetail(noti.id)">
+                <strong>{{ noti.title }}</strong>
+                <p>{{ noti.content }}</p>
+                <small>{{ noti.createdAt | date: 'short' }}</small>
+                <button *ngIf="!noti.read" (click)="markAsRead(noti.id); $event.stopPropagation()">
+                  {{ 'header.markAsRead' | translate }}
+                </button>
+              </div>
+            </div>
+          </li>
+
+          <!-- Giỏ hàng 
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/orders" routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }" (click)="onNavLinkClick(2)">
+              <i class="fas fa-shopping-cart icon"></i> {{ 'header.cart' | translate }}
+            </a>
+          </li>
+
+          <!-- Đăng nhập / Tài khoản 
+          <li class="nav-item">
+            <ng-container *ngIf="userResponse; else loginLink">
+              <a class="nav-link" [ngbPopover]="popoverContent" #popover="ngbPopover" popoverTitle="User Actions"
+                triggers="click" [placement]="'bottom'" style="cursor: pointer;">
+                {{ userResponse.fullname }}
+              </a>
+              <ng-template #popoverContent>
+                <div class="popover-list">
+                  <a class="popover-item" (click)="handleItemClick(0, popover)" style="cursor: pointer;">
+                    {{ 'header.account' | translate }}
+                  </a>
+                  <!--<a class="popover-item" (click)="handleItemClick(1, popover)" style="cursor: pointer;">
+                    {{ 'header.orders' | translate }}
+                  </a>
+                  <a class="popover-item" (click)="handleItemClick(2, popover)" style="cursor: pointer;">
+                    {{ 'header.history' | translate }}
+                  </a>
+                  <a class="popover-item" (click)="handleItemClick(3, popover)" style="cursor: pointer;">
+                    {{ 'header.logout' | translate }}
+                  </a>
+                </div>
+              </ng-template>
+            </ng-container>
+
+            <ng-template #loginLink>
+              <a class="nav-link" routerLink="/login" routerLinkActive="active">
+                {{ 'header.login' | translate }}
+              </a>
+            </ng-template>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Promo message for mobile 
+    <div class="promo-message d-block d-lg-none text-center w-100 mt-2">
+      🎉 <strong>{{ 'header.freeshipMobile' | translate }}</strong> 🎉
+    </div>
+  </nav>
+</header>-->
+
+<header class="header">
+  <div class="container">
+    <div class="header-content">
+      <!-- Logo -->
+      <div class="logo">
+        <h2>電子ストア</h2>
+        <span class="logo-subtitle">DENSHI STORE</span>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="nav">
+        <ul class="nav-list">
+          <li><a href="#" class="nav-link">ホーム</a></li>
+          <li><a href="#" class="nav-link">製品</a></li>
+          <li><a href="#" class="nav-link">カテゴリー</a></li>
+          <li><a href="#" class="nav-link">サポート</a></li>
+          <li><a href="#" class="nav-link">お問い合わせ</a></li>
+        </ul>
+      </nav>
+
+      <!-- Search Bar -->
+      <div class="search-bar">
+        <input type="text" placeholder="製品を検索..." class="search-input">
+        <button class="search-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.35-4.35"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- User Actions -->
+      <div class="user-actions">
+        <button class="action-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          <span class="action-text">ログイン</span>
+        </button>
+        <button class="action-btn cart-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17M17 13v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6"></path>
+          </svg>
+          <span class="cart-count">0</span>
+        </button>
+      </div>
+
+      <!-- Mobile Menu Toggle -->
+      <button class="mobile-menu-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </div>
+</header>

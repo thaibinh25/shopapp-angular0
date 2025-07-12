@@ -1,0 +1,10 @@
+<div class="text-center mt-5">
+  <div *ngIf="loading">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p class="mt-3">🔐 Đang đăng nhập bằng Google...</p>
+  </div>
+
+  <div *ngIf="!loading">
+    <p>✅ Xác thực hoàn tất, đang chuyển hướng...</p>
+  </div>
+</div>

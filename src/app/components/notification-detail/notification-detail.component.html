@@ -1,0 +1,21 @@
+<div class="notification-detail-container" *ngIf="notification">
+    <h2 class="title">{{ notification.title }}</h2>
+    
+    <div class="meta">
+      <span class="status" [class.unread]="!notification.read">
+        {{ notification.read ? 'Đã đọc' : 'Chưa đọc' }}
+      </span>
+      <span class="date">{{ notification.createdAt | date: 'fullDate' }} - {{ notification.createdAt | date: 'shortTime' }}</span>
+    </div>
+  
+    <div class="content">
+      <p>{{ notification.content }}</p>
+    </div>
+  
+  
+  </div>
+  
+  <div *ngIf="!notification" class="loading">
+    <p>Đang tải thông báo...</p>
+  </div>
+  

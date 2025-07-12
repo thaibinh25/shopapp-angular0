@@ -1,0 +1,391 @@
+/*@use 'sass:color'; // Sử dụng module color của Sass để xử lý các hiệu ứng màu sắc
+@use '../../styles/shared-styles' as *;
+
+.container {
+  color: rgb(0, 0, 0); // Màu chữ mặc định trong container
+  font-weight: 600; // Độ đậm của font chữ
+  padding-bottom: 50px; // Khoảng cách dưới cùng của container
+
+  .intro-section {
+    color: rgb(0, 0, 0); // Màu chữ trong phần giới thiệu
+    padding: 20px; // Khoảng cách trong phần giới thiệu
+    text-align: center; // Căn giữa nội dung trong phần giới thiệu
+  }
+
+  .product-header {
+    color: $shopapp-tint-color; // Màu sắc của tiêu đề sản phẩm
+  }
+
+  .product-order {
+    color: $shopapp-tint-color; // Màu sắc của phần hiển thị tổng giá sản phẩm
+  }
+
+  table {
+    width: 100%; // Đặt chiều rộng bảng chiếm toàn bộ chiều rộng của container
+    border-radius: 10px; // Bo góc của bảng
+    border: 1px solid white; // Đặt viền cho bảng
+    border-collapse: separate; // Đảm bảo các cell trong bảng không bị gộp lại
+    border-spacing: 0; // Loại bỏ khoảng cách giữa các cell
+    background-color: $shopapp-background-color; // Màu nền cho bảng
+
+    th {
+      background-color: color.adjust($shopapp-background-color, $lightness: 10%); // Làm sáng nền tiêu đề bảng
+      color: black; // Màu chữ của tiêu đề bảng
+      font-weight: bold; // Đặt độ đậm cho chữ trong tiêu đề
+    }
+
+    tr:hover {
+      background-color: color.adjust($shopapp-background-color, $lightness: 5%); // Hiệu ứng hover cho các hàng trong bảng
+    }
+
+    th, td {
+      padding: 10px; // Khoảng cách giữa các cell
+      text-align: center; // Căn giữa nội dung trong các cell
+    }
+
+    .product-info {
+      display: flex; // Sử dụng flexbox để căn chỉnh các sản phẩm trong bảng
+      align-items: center; // Căn giữa theo chiều dọc
+    }
+
+    .product-image {
+      width: 100px; // Đặt chiều rộng ảnh sản phẩm
+      height: 100px; // Đặt chiều cao ảnh sản phẩm
+      border-radius: 5px; // Bo góc cho ảnh sản phẩm
+      margin-right: 18px; // Khoảng cách giữa ảnh sản phẩm và tên sản phẩm
+    }
+
+    .product-name {
+      color: rgb(0, 0, 0); // Màu chữ của tên sản phẩm
+      margin-right: 10px; // Khoảng cách giữa tên sản phẩm và giá
+    }
+
+    .btn-danger {
+      background-color: rgb(113, 20, 20); // Màu nền của nút xóa
+      color: white; // Màu chữ của nút xóa
+      border-radius: 30px; // Bo góc cho nút xóa
+      padding: 10px 20px; // Padding cho nút xóa
+      font-size: 14px; // Kích thước chữ cho nút xóa
+      cursor: pointer; // Thêm con trỏ chuột khi hover vào nút xóa
+      
+      &:hover {
+        background-color: color.adjust(red, $lightness: -10%); // Hiệu ứng hover cho nút xóa (làm tối màu)
+      }
+    }
+  }
+
+  .header-text {
+    color: $shopapp-color; // Màu chữ cho header tổng giá
+    font-size: 16px; // Kích thước chữ cho header tổng giá
+    font-weight: bold; // Đặt độ đậm cho chữ
+  }
+
+  .btn-gradient {
+    background: linear-gradient(to right, $shopapp-tint-color, $shopapp-color); // Gradient cho nút
+    color: white; // Màu chữ của nút
+    border-radius: 30px; // Bo góc cho nút
+    width: 200px; // Chiều rộng của nút
+    padding: 10px; // Padding cho nút
+    text-align: center; // Căn giữa nội dung trong nút
+    
+    &:hover {
+      background: linear-gradient(to right, color.adjust($shopapp-tint-color, $lightness: 10%), color.adjust($shopapp-color, $lightness: 10%)); // Hiệu ứng hover cho nút gradient (làm sáng màu)
+    }
+  }
+
+  .input-group {
+    margin-top: 20px; // Khoảng cách giữa các phần tử trong input group
+
+    input.form-control {
+      width: 75%; // Chiều rộng của input
+      padding: 10px; // Padding cho input
+      border-radius: 5px; // Bo góc cho input
+      border: 1px solid $shopapp-background-color; // Viền cho input
+      color: $shopapp-tint-color; // Màu chữ trong input
+    }
+
+    button.btn-gradient {
+      width: 20%; // Chiều rộng của nút trong input group
+      padding: 10px; // Padding cho nút
+      font-size: 14px; // Kích thước chữ cho nút
+    }
+  }
+
+  .text-start {
+    margin-top: 20px; // Khoảng cách phía trên cho các phần tử có class .text-start
+  }
+}
+
+.empty-cart-text {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #000000;
+}
+// Form thẻ Visa 
+.visa-card-form {
+  background-color: #f9f7f1;
+  border: 1px solid #e2ded3;
+  border-radius: 10px;
+  padding: 20px;
+
+  label {
+    font-weight: 500;
+    color: #5a4e3c;
+  }
+
+  .visa-card-display {
+    position: relative;
+    background: linear-gradient(135deg, #1a1f71, #3a41c4);
+    color: white;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 15px;
+    font-family: 'Courier New', monospace;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+
+    .chip {
+      width: 40px;
+      height: 30px;
+      background: gold;
+      border-radius: 6px;
+      margin-bottom: 15px;
+    }
+
+    .card-number {
+      font-size: 1.4rem;
+      letter-spacing: 2px;
+      margin-bottom: 15px;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+    }
+
+    .visa-logo {
+      position: absolute;
+      bottom: 10px;
+      right: 15px;
+      width: 60px;
+    }
+  }
+
+  input {
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 14px;
+
+    &:focus {
+      border-color: #a67c52;
+      box-shadow: 0 0 0 2px rgba(166, 124, 82, 0.2);
+    }
+  }
+}*/
+
+
+@use 'sass:color';
+@use '../../styles/shared-styles' as *;
+
+.container {
+  color: #000;
+  font-weight: 600;
+  padding-bottom: 50px;
+
+  .intro-section {
+    color: #000;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .product-header,
+  .product-order {
+    color: $shopapp-tint-color;
+  }
+ 
+  table {
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid white;
+    border-collapse: separate;
+    border-spacing: 0;
+    background-color: $shopapp-background-color;
+
+    th {
+      background-color: color.adjust($shopapp-background-color, $lightness: 10%);
+      color: black;
+      font-weight: bold;
+    }
+
+    tr:hover {
+      background-color: color.adjust($shopapp-background-color, $lightness: 5%);
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: center;
+    }
+
+    .product-info {
+      display: flex;
+      align-items: center;
+    }
+
+    .product-image {
+      width: 100px;
+      height: 100px;
+      border-radius: 5px;
+      margin-right: 18px;
+      object-fit: contain;
+    }
+
+    .product-name {
+      color: #000;
+      margin-right: 10px;
+    }
+
+    .btn-danger {
+      background-color: rgb(113, 20, 20);
+      color: white;
+      border-radius: 30px;
+      padding: 10px 20px;
+      font-size: 14px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: color.adjust(red, $lightness: -10%);
+      }
+    }
+  }
+
+  .header-text {
+    color: $shopapp-color;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .btn-gradient {
+    background: linear-gradient(to right, $shopapp-tint-color, $shopapp-color);
+    color: white;
+    border-radius: 30px;
+    width: 200px;
+    padding: 10px;
+    text-align: center;
+
+    &:hover {
+      background: linear-gradient(to right, color.adjust($shopapp-tint-color, $lightness: 10%), color.adjust($shopapp-color, $lightness: 10%));
+    }
+  }
+
+  .input-group {
+    margin-top: 20px;
+
+    input.form-control {
+      width: 75%;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid $shopapp-background-color;
+      color: $shopapp-tint-color;
+    }
+
+    button.btn-gradient {
+      width: 20%;
+      padding: 10px;
+      font-size: 14px;
+    }
+  }
+
+  .text-start {
+    margin-top: 20px;
+  }
+}
+
+.empty-cart-text {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #000;
+}
+
+.visa-card-form {
+  background-color: #f9f7f1;
+  border: 1px solid #e2ded3;
+  border-radius: 10px;
+  padding: 20px;
+
+  label {
+    font-weight: 500;
+    color: #5a4e3c;
+  }
+
+  .visa-card-display {
+    position: relative;
+    background: linear-gradient(135deg, #1a1f71, #3a41c4);
+    color: white;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 15px;
+    font-family: 'Courier New', monospace;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+
+    .chip {
+      width: 40px;
+      height: 30px;
+      background: gold;
+      border-radius: 6px;
+      margin-bottom: 15px;
+    }
+
+    .card-number {
+      font-size: 1.4rem;
+      letter-spacing: 2px;
+      margin-bottom: 15px;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+    }
+
+    .visa-logo {
+      position: absolute;
+      bottom: 10px;
+      right: 15px;
+      width: 60px;
+    }
+  }
+
+  input {
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 14px;
+
+    &:focus {
+      border-color: #a67c52;
+      box-shadow: 0 0 0 2px rgba(166, 124, 82, 0.2);
+    }
+  }
+}
+
+// Ẩn cột trên mobile
+@media (max-width: 480px) {
+  .hide-sm {
+    display: none !important;
+  }
+
+  .product-info .product-image {
+    width: 50px;
+    height: 50px;
+  }
+
+  .product-info .product-name {
+    font-size: 0.85rem;
+  }
+
+  .btn-danger.btn-sm {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+}

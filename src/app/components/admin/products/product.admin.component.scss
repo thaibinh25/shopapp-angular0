@@ -1,0 +1,16 @@
+img {
+    border-radius: 4px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 60px;
+}
+.table-light th {
+    text-align: center;
+}
+textarea.auto-expand {
+    min-height: 38px;
+    resize: none; /* không cho kéo bằng chuột */
+  }

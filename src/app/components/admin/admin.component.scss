@@ -1,0 +1,42 @@
+html, body {
+    height: 100%; /* Đảm bảo body và html có chiều cao đầy đủ */
+    margin: 0; /* Loại bỏ margin mặc định của trình duyệt */
+}
+.container-fluid {
+    background-color: white;
+    height: 100%;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+.header {
+    background-color: #333;
+    color: white;
+    padding: 10px;
+    text-align: center;
+}
+#sidebar {
+    background-color: #48ccce !important;
+    color: white;
+    height: 100%;
+    overflow-y: auto; /* Cho phép cuộn dọc nếu nội dung vượt quá chiều cao */
+    position: relative; /* Đảm bảo sidebar không cố định */
+}
+#sidebar a {
+    color: white;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    padding: 10px 15px;
+}
+.icon {
+    padding:  5px   ;
+}
+
+.col-md-9 {
+    flex-grow: 1;
+    overflow-y: auto;
+    height: 100%;
+}
+
+.main-content {
+    flex-grow: 1;
+    overflow-y: auto;
+}

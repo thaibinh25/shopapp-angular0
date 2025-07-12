@@ -1,0 +1,71 @@
+<div class="container">
+    <form #loginForm="ngForm" (ngSubmit)="login()" novalidate>
+        <div class="login-form mx-auto">
+            <h2 class="login-header">Login</h2>
+
+            <div class="form-group">
+                <label for="phoneNumber">Phone Number</label>
+                <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" [(ngModel)]="phoneNumber"
+                    (input)="onPhoneNumberChange()" (focus)="loginForm?.form?.get('phoneNumber')?.markAsTouched()"
+                    required />
+                <div class="divider-nospace"></div>
+            </div>
+
+            <div class="mt-5"></div>
+
+            <div class="form-group password-field">
+                <label for="password">Password</label>
+                <input [type]="passwordVisible ? 'text' : 'password'" class="form-control" id="password" name="password" [(ngModel)]="password"
+                    placeholder="At least 3 characters" required />
+                <i class="password-toggle" [ngClass]="passwordVisible ? 'fas fa-eye' : 'fas fa-eye-slash'"  (click)="togglePassword()"></i>
+                <div class="divider-nospace"></div>
+            </div>
+
+            <div class="form-group">
+                <div class="form-check checkbox-text">
+                    <span style="display: flex;">
+                        <input type="checkbox" class="form-check-input" id="remember" name="rememberMe"
+                            [(ngModel)]="rememberMe" />
+                        <label class="form-check-label text-start" for="remember">
+                            Remember me
+                        </label>
+                    </span>
+                    <a href="#" class="register-link">Forgot password</a>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <select class="form-control access-right" [(ngModel)]="selectedRole" name="role" required>
+                    <option disabled selected>Login Role</option>
+                    <option *ngFor="let role of roles" [ngValue]="role">
+                        {{ role.name }}
+                    </option>
+                </select>
+            </div>
+
+            <button [disabled]="loginForm.invalid || isSubmitting" type="submit" class="login-button">
+                <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                {{ isSubmitting ? 'Logging in...' : 'Login' }}
+              </button>
+              
+
+
+            <!-- Nút bạn tự thiết kế, có thể tùy style -->
+            
+            <button type="button" [disabled]="oneTapActive" (click)="loginWithGoogle()" class="btn btn-google" >
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/768px-Google_%22G%22_logo.svg.png" style="width: 20px; margin-right: 6px;" />
+                Đăng nhập bằng Google
+              </button>
+
+
+            <div class="divider"></div>
+
+
+
+            <p class="text-center">
+                Not registered yet?
+                <span><a class="register-link" (click)="createAccount()" style="cursor: pointer;">Create an account</a></span>
+            </p>
+        </div>
+    </form>
+</div>

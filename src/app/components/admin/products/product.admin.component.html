@@ -1,0 +1,182 @@
+<div class="container mt-4">
+    <h2>Products Admin Page</h2>
+
+    <!-- Add/Update Product Form (Complete) -->
+    <form #formSection (ngSubmit)="saveProduct()" class="mb-3" enctype="multipart/form-data">
+        <table class="table table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th colspan="4">Product Information</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Row 1 -->
+                <tr>
+                    <td>
+                        <label>Product Name</label>
+                        <input type="text" class="form-control" [(ngModel)]="selectedProduct.name" name="name"
+                            required />
+                    </td>
+                    <td>
+                        <label>Price</label>
+                        <input type="number" class="form-control" [(ngModel)]="selectedProduct.price" name="price"
+                            min="0" step="0.01" required />
+                    </td>
+                    <td colspan="2">
+                        <label>Description</label>
+                        <textarea
+                          #descriptionTextarea
+                          class="form-control auto-expand"
+                          [(ngModel)]="selectedProduct.description"
+                          name="description"
+                          rows="1"
+                          (input)="autoResize($event)">
+                        </textarea>
+                      </td>
+                </tr>
+
+                <!-- Row 2 -->
+                <tr>
+                    <td>
+                        <label>-- Select Category --</label>
+                        <select class="form-select" [(ngModel)]="selectedProduct.category_id" name="category_id"
+                            required>
+                            <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
+                        </select>
+                    </td>
+                    <td>
+                        <label>--Select Brand --</label>
+                        <select class="form-select" [(ngModel)]="selectedProduct.brand_id" name="brand_id" required>
+                            <option *ngFor="let cat of brands" [value]="cat.id">{{cat.name}}</option>
+                        </select>
+                    </td>
+                   
+                    <td colspan="2">
+                        <label>Product Images (up to 5 images)</label>
+
+                        <!-- Hiển thị preview ảnh hiện tại -->
+                        <div class="d-flex flex-wrap gap-2 mb-2">
+                            <div *ngFor="let img of currentImages; let i = index" class="position-relative">
+                                <img [src]="getImageUrl(img)" alt="Image" width="80" height="80"
+                                    class="rounded border" />
+                                <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0"
+                                    (click)="removeCurrentImage(i)">
+                                    &times;
+                                </button>
+                            </div>
+
+                            <!-- Preview ảnh mới -->
+                            <div *ngFor="let img of newImagePreview; let i = index" class="position-relative">
+                                <img [src]="img" alt="New Image" width="80" height="80" class="rounded border" />
+                                <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0"
+                                    (click)="removeNewImage(i)">
+                                    &times;
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Chọn ảnh mới -->
+                        <input type="file" class="form-control" accept="image/*" multiple
+                            (change)="onImageSelected($event)"
+                            [disabled]="(currentImages.length + newImages.length) >= 5" />
+                    </td>
+
+
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Action buttons below the table, centered -->
+        <div class="text-center mt-3">
+            <button class="btn btn-success me-2" type="submit" [disabled]="isSubmitting">
+              <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+              {{ isSubmitting ? 'Processing...' : '' }}
+              <span *ngIf="!isSubmitting">
+                {{ selectedProduct.id === 0 ? 'Add New' : 'Update' }}
+              </span>
+            </button>
+          
+            <button class="btn btn-secondary" type="button" (click)="resetForm()" [disabled]="isSubmitting">
+              Cancel
+            </button>
+          </div>
+          
+    </form>
+
+    <!-- Category Filter -->
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <label for="categoryFilter">Filter by Category:</label>
+            <select id="categoryFilter" class="form-select" [(ngModel)]="selectedCategoryId"
+                (change)="onCategoryChange()">
+                <option [value]="0">All</option>
+                <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <label for="brandFilter">Filter by Brand:</label>
+            <select id="brnandFilter" class="form-select" [(ngModel)]="selectedBrandId" (change)="onBrandChange()">
+                <option [value]="0">All</option>
+                <option *ngFor="let cat of brands" [value]="cat.id">{{ cat.name }}</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Product Display Table -->
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Thumbnail</th>
+                <th>Description</th>
+                <th>Category</th>
+                <th>Brand</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let product of products">
+                <td>{{ product.id }}</td>
+                <td>{{ product.name }}</td>
+                <td>{{ product.price }}</td>
+                <td><img [src]="product.thumbnail" alt="Thumbnail"
+                        width="50" /></td>
+                <td>{{ product.description }}</td>
+                <td>{{ product.category_id }}</td>
+                <td>{{ product.brand_id }}</td>
+                <td>
+                    <button class="btn btn-warning btn-sm me-1" (click)="editProduct(product)">Edit</button>
+                    <button class="btn btn-danger btn-sm" (click)="deleteProduct(product.id)">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <div class="d-flex justify-content-center">
+        <nav class="d-inline-block" aria-label="Page navigation">
+            <ul class="pagination">
+                <li class="page-item" *ngIf="currentPage > 0">
+                    <a class="page-link" (click)="onPageChange(1)">First</a>
+                </li>
+                <li class="page-item" *ngIf="currentPage > 0">
+                    <a class="page-link" (click)="onPageChange(currentPage - 1)">Previous</a>
+                </li>
+                <ng-container *ngFor="let page of visiblePages">
+                    <li class="page-item" [ngClass]="{'active': page === currentPage}">
+                        <a class="page-link" (click)="onPageChange(page)">{{ page }}</a>
+                    </li>
+                </ng-container>
+                <li class="page-item" *ngIf="currentPage < totalPages - 1">
+                    <a class="page-link" (click)="onPageChange(currentPage + 1)">Next</a>
+                </li>
+                <li class="page-item" *ngIf="currentPage < totalPages - 1">
+                    <a class="page-link" (click)="onPageChange(totalPages)">Last</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>

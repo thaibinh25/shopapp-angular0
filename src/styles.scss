@@ -1,1 +1,36 @@
 /* You can add global styles to this file, and also import other style files */
+::ng-deep .toast-top-center {
+    top: 80px !important;
+  }
+  
+  ::ng-deep .ngx-toastr {
+    background: rgba(166, 124, 82, 0.95);
+    color: #fff;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+  }
+  
+  
+  @keyframes fadeInOut {
+    0% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+    10% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    90% { opacity: 1; }
+    100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+  }
+  
+  .toast-top-center {
+    top: 90vh !important;               // 👈 Đặt vị trí toast cách **top 90% chiều cao** màn hình (rất gần cuối). Dùng 33vh nếu muốn 1/3 từ trên xuống.
+    right: 0 !important;                // 👈 Đặt điểm neo bên phải là 0 (sẽ giúp canh giữa theo chiều ngang).
+    bottom: auto !important;           // 👈 Vô hiệu hóa giá trị `bottom` để toast không bị neo vào dưới.
+    left: 0 !important;                // 👈 Đặt điểm neo trái là 0.
+    margin: 0 auto;                    // 👈 Tự động canh giữa theo chiều ngang (kết hợp với left: 0 và right: 0).
+    position: fixed !important;       // 👈 Toast hiển thị ở vị trí cố định trên màn hình, không bị cuộn theo nội dung.
+    width: fit-content;               // 👈 Đặt chiều rộng toast vừa đủ với nội dung (không chiếm toàn màn hình).
+    z-index: 9999 !important;         // 👈 Ưu tiên hiển thị phía trên các thành phần khác (tránh bị che khuất).
+    pointer-events: none;             // 👈 Không cho người dùng tương tác với toast (ví dụ: click xuyên qua toast).
+    text-align: center;               // 👈 Căn giữa nội dung bên trong toast.
+    background-color: #c4edc2;        // 👈 Màu nền của toast (tuỳ chỉnh theo tone nhẹ - phù hợp với thiết kế trang web bạn đã chọn).
+  }
+  

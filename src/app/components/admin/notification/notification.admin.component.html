@@ -1,0 +1,35 @@
+<div class="container mt-4">
+    <h2>Gửi thông báo</h2>
+  
+    <div class="form-group">
+      <label>Tiêu đề</label>
+      <input type="text" class="form-control" [(ngModel)]="title">
+    </div>
+  
+    <div class="form-group mt-2">
+      <label>Nội dung</label>
+      <textarea rows="3" class="form-control" [(ngModel)]="content"></textarea>
+    </div>
+  
+    <div class="form-group mt-2">
+      <label>Chế độ gửi</label>
+      <select class="form-select" [(ngModel)]="mode">
+        <option value="role">Gửi đến tất cả (ROLE_USER)</option>
+        <option value="user">Gửi cho 1 khách hàng</option>
+      </select>
+    </div>
+  
+    <div class="form-group mt-2" *ngIf="mode === 'user'">
+      <label>Chọn khách hàng</label>
+      <select class="form-select" [(ngModel)]="selectedUserId">
+        <option *ngFor="let user of users" [value]="user.id">
+          {{ user.fullName }} ({{ user.phoneNumber }})
+        </option>
+      </select>
+    </div>
+  
+    <div class="mt-3">
+      <button class="btn btn-primary" (click)="sendNotification()">Gửi thông báo</button>
+    </div>
+  </div>
+  

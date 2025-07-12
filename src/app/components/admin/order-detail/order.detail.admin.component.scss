@@ -1,0 +1,44 @@
+.order-detail-admin {
+    h2 {
+        font-weight: 600;
+        color: #333;
+    }
+
+    .card {
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .card-header {
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
+
+    table {
+
+        th,
+        td {
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f8f9fa;
+        }
+
+        img {
+            object-fit: cover;
+            border-radius: 6px;
+        }
+    }
+
+    .form-group select {
+        border-radius: 8px;
+    }
+
+    button {
+        padding: 10px 20px;
+        font-weight: 500;
+        font-size: 1rem;
+    }
+}

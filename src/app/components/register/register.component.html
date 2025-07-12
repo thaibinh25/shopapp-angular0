@@ -1,0 +1,87 @@
+<div class="container">
+    <form #registerForm="ngForm">
+        <div class="row">
+            <div class="col-12 d-flex justify-content-center">
+                <div class="register-form mx-auto">
+                    <h2 class="register-header">Register</h2>
+                    <div class="form-group">
+                        <label for="phoneNumber">Phone's Number</label>
+                        <input type="text" class="form-control" [(ngModel)]="phoneNumber"
+                            (input)="onPhoneNumberChange()" name="phoneNumber"
+                            (focus)="registerForm.form.markAsTouched()" required id="phoneNumber">
+                        <div class="divider-nospace"></div>
+                        <p class="text-danger" *ngIf="phoneNumber.length < 6 && 
+                            registerForm.form.touched">Phone number must be at least 6 characters</p>
+                    </div>
+                    <div class="mt-3"></div>
+                    <div class="form-group password-field">
+                        <label for="password">Password</label>
+                        <input [type]="passwordVisible ? 'text' : 'password'" [(ngModel)]="password" required placeholder="Ít nhất 3 ký tự"
+                            name="password" class="form-control" id="password">
+                        <i class="password-toggle" [ngClass]="passwordVisible ? 'fas fa-eye' : 'fas fa-eye-slash'" (click)="togglePassword()"></i>
+                        <div class="divider-nospace"></div>
+                        <p class="text-danger" *ngIf="password.length < 3 && 
+                            registerForm.form.touched">Password must be at least 3 characters
+                        </p>
+                    </div>
+                    <div class="mt-3"></div>
+                    <div class="form-group password-field">
+                        <label for="confirm-password">Confirm Password</label>
+                        <input [type]="confirmPasswordVisible ? 'text' : 'password'" [(ngModel)]="retypePassword" required
+                            placeholder="Ít nhất 3 ký tự" name="retypePassword"
+                            (input)="registerForm.form.markAsTouched();checkPasswordsMatch()" class="form-control"
+                            id="confirm-password">
+                        <i class="password-toggle" [ngClass]="confirmPasswordVisible ? 'fas fa-eye' : 'fas fa-eye-slash'"
+                        (click)="toggleConfirmPassword()" ></i>
+                        <div class="divider-nospace"></div>
+                        <p class="text-danger" *ngIf="retypePassword.length < 3 && 
+                        registerForm.form.touched">Confirm password must be at least 3 characters
+                        </p>
+                        <p class="text-danger"
+                            *ngIf="registerForm.controls['retypePassword'].hasError('PasswordMismatch')&& registerForm.form.touched">
+                            Passwords do not match
+                        </p>
+                    </div>
+                    <div class="mt-3"></div>
+                    <div class="form-group">
+                        <label for="full-name">Full Name</label>
+                        <input type="text" [(ngModel)]="fullName" required name="fullName" class="form-control"
+                            id="full-name">
+                        <div class="divider-nospace"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="date-of-birth">Date of Birth</label>
+                        <input type="date" required [(ngModel)]="dateOfBirth" name="dateOfBirth"
+                            (input)="registerForm.form.markAsTouched(); checkAge()" class="form-control"
+                            id="date-of-birth" [(ngModel)]="dateOfBirth">
+                        <div class="divider-nospace"></div>
+                        <p class="text-danger" *ngIf="registerForm.controls['dateOfBirth'].hasError('invaliAge')
+                                && registerForm.form.touched">
+                            Bạn chưa đủ 18 tuổi
+                        </p>
+                    </div>
+                    <div class="mt-3"></div>
+                    <div class="form-group">
+                        <label for="address">Address</label>
+                        <input type="text" [(ngModel)]="address" name="address" class="form-control" id="address">
+                        <div class="divider-nospace"></div>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-check checkbox-text">
+                            <span style="display: flex;">
+                                <input type="checkbox" [(ngModel)]="isAccepted" name="isAccepted"
+                                    class="form-check-input" id="agree">
+                                <label class="form-check-label text-start" for="agree">
+                                    I agree to the terms and conditions</label>
+                            </span>
+                        </div>
+                    </div>
+                    <button type="button" (click)="register()" class="register-button">Register</button>
+                    <div class="divider"></div>
+                    <p class="text-center">Already have an account? <span>
+                            <a (click)="login()" class="login-link" style="cursor: pointer;">Login</a></span></p>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

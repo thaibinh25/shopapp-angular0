@@ -1,0 +1,48 @@
+
+
+<div class="container-fluid">
+    <header class="header bg-success text-white d-flex justify-content-between">
+        <h1 class="header-title">Dashboard Header</h1>
+        <button class="btn btn-danger btn-sm" (click)="logout()">Logout</button>
+    </header>
+    
+    <div class="row d-flex" style="height: calc(100vh - 56px);"> <!-- Cộng với chiều cao của header -->
+        <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar" style="height: 100%; overflow-y: auto;">
+            <div class="position-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" [routerLink]="['/admin/orders']">
+                            <i class="fab fa-first-order icon"></i>Orders
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" [routerLink]="['/admin/categories']">
+                            <i class="fab fa-canadian-maple-leaf icon"></i>Categories
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" [routerLink]="['/admin/brands']">
+                            <i class="fas fa-spa icon"></i>Brands
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" [routerLink]="['/admin/products']">
+                            <i class="fab fa-codepen icon"></i>Products
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" [routerLink]="['/admin/notifications']">
+                          <i class="bi bi-bell"></i> Notifications
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="col-md-9 col-lg-10 overflow-auto" style="height: 100%; overflow-y: auto;">
+            <!-- Router outlet để hiển thị các component con khi route thay đổi -->
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+</div>
