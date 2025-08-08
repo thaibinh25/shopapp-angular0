@@ -61,8 +61,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     //gọi Api lấy dnah sách roles và lưu vào biến roles
-    this.getRole();
-
+    this.getRole(); 
   }
 
   getRole(){
@@ -86,6 +85,7 @@ export class LoginComponent implements OnInit {
   createAccount() {
 
     // Chuyển hướng người dùng đến trang đăng ký (hoặc trang tạo tài khoản)
+    //this.router.navigate(['/register']);
     this.router.navigate(['/register']);
   }
 
@@ -99,7 +99,6 @@ export class LoginComponent implements OnInit {
     const loginDTO: LoginDTO = {
       phone_number: this.phoneNumber,
       password: this.password,
-      role_id: this.selectedRole?.id ?? 1
     };
   
     this.userService.login(loginDTO).subscribe({
@@ -148,7 +147,7 @@ export class LoginComponent implements OnInit {
   // login.component.ts
   loginWithGoogle() {
     const clientId = '582191794962-ksv61g67eppduhcmi5gp8s73v9chshm2.apps.googleusercontent.com';
-    const redirectUri = 'https://0378-240b-c010-640-8b1-4899-3cb5-3937-bbc.ngrok-free.app/oauth2/callback';
+    const redirectUri = 'https://ffc5791377bf.ngrok-free.app/oauth2/callback';
     // Trang Angular xử lý redirect
     const scope = 'openid email profile';
     const responseType = 'code';

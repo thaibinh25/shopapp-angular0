@@ -1,0 +1,242 @@
+<div class="contact-page">
+    <div class="container">
+      <!-- Hero Section -->
+      <section class="contact-hero">
+        <h1>お問い合わせ</h1>
+        <p>ご質問やご不明な点がございましたら、お気軽にお問い合わせください</p>
+      </section>
+
+      <div class="contact-layout">
+        <!-- Contact Form -->
+        <div class="contact-form-section">
+          <div class="form-header">
+            <h2>お問い合わせフォーム</h2>
+            <p>以下のフォームにご記入いただき、送信してください。24時間以内にご返信いたします。</p>
+          </div>
+
+          <form class="contact-form" (ngSubmit)="submitForm()" #contactFormRef="ngForm">
+            <div class="form-row">
+              <div class="form-group">
+                <label>お名前 *</label>
+                <input 
+                  type="text" 
+                  [(ngModel)]="contactForm.name" 
+                  name="name"
+                  required
+                  placeholder="山田太郎"
+                >
+              </div>
+              <div class="form-group">
+                <label>メールアドレス *</label>
+                <input 
+                  type="email" 
+                  [(ngModel)]="contactForm.email" 
+                  name="email"
+                  required
+                  placeholder="example@email.com"
+                >
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>電話番号</label>
+                <input 
+                  type="tel" 
+                  [(ngModel)]="contactForm.phone" 
+                  name="phone"
+                  placeholder="090-1234-5678"
+                >
+              </div>
+              <div class="form-group">
+                <label>お問い合わせカテゴリー *</label>
+                <select [(ngModel)]="contactForm.category" name="category" required>
+                  <option value="">選択してください</option>
+                  <option value="product">製品について</option>
+                  <option value="order">注文・配送について</option>
+                  <option value="payment">支払いについて</option>
+                  <option value="warranty">保証・修理について</option>
+                  <option value="account">アカウントについて</option>
+                  <option value="technical">技術的な問題</option>
+                  <option value="other">その他</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>件名 *</label>
+                <input 
+                  type="text" 
+                  [(ngModel)]="contactForm.subject" 
+                  name="subject"
+                  required
+                  placeholder="お問い合わせの件名を入力してください"
+                >
+              </div>
+              <div class="form-group">
+                <label>優先度</label>
+                <select [(ngModel)]="contactForm.priority" name="priority">
+                  <option value="low">低</option>
+                  <option value="medium" selected>中</option>
+                  <option value="high">高</option>
+                  <option value="urgent">緊急</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>お問い合わせ内容 *</label>
+              <textarea 
+                [(ngModel)]="contactForm.message" 
+                name="message"
+                required
+                rows="6"
+                placeholder="お問い合わせの詳細をご記入ください..."
+              ></textarea>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="submit-btn" [disabled]="!contactFormRef.form.valid">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                </svg>
+                送信する
+              </button>
+              <button type="button" class="reset-btn" (click)="resetForm()">
+                リセット
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Contact Information -->
+        <div class="contact-info-section">
+          <div class="info-card">
+            <h3>お問い合わせ先</h3>
+            
+            <div class="contact-methods">
+              <div class="contact-method">
+                <div class="method-icon">📞</div>
+                <div class="method-details">
+                  <h4>電話でのお問い合わせ</h4>
+                  <p class="method-value">0120-123-456</p>
+                  <p class="method-hours">平日 9:00-18:00 / 土日祝 10:00-17:00</p>
+                </div>
+              </div>
+
+              <div class="contact-method">
+                <div class="method-icon">✉️</div>
+                <div class="method-details">
+                  <h4>メールでのお問い合わせ</h4>
+                  <p class="method-value">support-denshi-store.jp</p>
+                  <p class="method-hours">24時間受付 / 24時間以内に返信</p>
+                </div>
+              </div>
+
+              <div class="contact-method">
+                <div class="method-icon">💬</div>
+                <div class="method-details">
+                  <h4>チャットサポート</h4>
+                  <p class="method-value">リアルタイム対応</p>
+                  <p class="method-hours">24時間365日 / 平均応答時間2分</p>
+                </div>
+              </div>
+
+              <div class="contact-method">
+                <div class="method-icon">📍</div>
+                <div class="method-details">
+                  <h4>所在地</h4>
+                  <p class="method-value">〒100-0001</p>
+                  <p class="method-hours">東京都千代田区千代田1-1<br>電子ストアビル 5F</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- FAQ Quick Links -->
+          <div class="info-card">
+            <h3>よくある質問</h3>
+            <div class="faq-links">
+              <a href="#" class="faq-link" *ngFor="let faq of quickFaqs">
+                <span class="faq-icon">❓</span>
+                <span>{{ faq }}</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="9,18 15,12 9,6"></polyline>
+                </svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- Business Hours -->
+          <div class="info-card">
+            <h3>営業時間</h3>
+            <div class="business-hours">
+              <div class="hours-item">
+                <span class="day">平日</span>
+                <span class="time">9:00 - 18:00</span>
+              </div>
+              <div class="hours-item">
+                <span class="day">土曜日</span>
+                <span class="time">10:00 - 17:00</span>
+              </div>
+              <div class="hours-item">
+                <span class="day">日曜・祝日</span>
+                <span class="time">10:00 - 17:00</span>
+              </div>
+              <div class="hours-note">
+                <p>※年末年始（12/29-1/3）は休業いたします</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Map Section -->
+      <section class="map-section">
+        <h2>アクセス</h2>
+        <div class="map-container">
+          <div class="map-placeholder">
+            <div class="map-icon">🗺️</div>
+            <p>Google Maps</p>
+            <p class="map-address">東京都千代田区千代田1-1</p>
+          </div>
+          <div class="access-info">
+            <h3>交通アクセス</h3>
+            <div class="access-methods">
+              <div class="access-item">
+                <span class="transport-icon">🚇</span>
+                <div>
+                  <strong>地下鉄</strong>
+                  <p>千代田線「千代田駅」徒歩3分</p>
+                </div>
+              </div>
+              <div class="access-item">
+                <span class="transport-icon">🚌</span>
+                <div>
+                  <strong>バス</strong>
+                  <p>都営バス「千代田一丁目」停留所前</p>
+                </div>
+              </div>
+              <div class="access-item">
+                <span class="transport-icon">🚗</span>
+                <div>
+                  <strong>お車</strong>
+                  <p>首都高速「千代田IC」より5分<br>駐車場完備（2時間無料）</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Overlay thông báo -->
+<div class="feature-overlay">
+    <div class="overlay-text">
+      🚧 この機能は現在ご利用いただけません<br>
+      <small>(Chức năng này chưa được đưa vào sử dụng)</small>
+    </div>
+  </div>
+  
+  </div>

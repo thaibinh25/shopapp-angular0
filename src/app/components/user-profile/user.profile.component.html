@@ -1,70 +1,201 @@
-<div class="profile-container">
-  <!-- Tabs chọn mục -->
-  <div class="tab-menu">
-    <button (click)="activeTab = 'info'" [class.active]="activeTab === 'info'">{{ 'profile.infoTab' | translate }}</button>
-    <button (click)="activeTab = 'contact'" [class.active]="activeTab === 'contact'">{{ 'profile.contactTab' | translate }}</button>
-    <button (click)="activeTab = 'password'" [class.active]="activeTab === 'password'">{{ 'profile.passwordTab' | translate }}</button>
-  </div>
-
-  <!-- Nội dung từng tab -->
-  <div class="tab-content">
-
-    <!-- Tab 1: Thông tin cá nhân -->
-    <div class="tab-pane" [class.active]="activeTab === 'info'" *ngIf="activeTab === 'info'">
-      <p><strong>{{ 'profile.fullname' | translate }}:</strong> {{ user.fullname }}</p>
-      <p><strong>{{ 'profile.dob' | translate }}:</strong> {{ user.dateOfBirth | date: 'dd/MM/yyyy' }}</p>
-    </div>
-
-    <!-- Tab 2: Liên hệ -->
-    <div *ngIf="activeTab === 'contact'">
-      <form [formGroup]="userContactForm" (ngSubmit)="updateContactInfo()">
-        <label>{{ 'profile.address' | translate }}:</label>
-        <input formControlName="address" type="text" [readonly]="!isEditingContact" />
-        <div *ngIf="userContactForm.get('address')?.invalid && userContactForm.get('address')?.touched">
-          <small style="color:red;">{{ 'profile.addressRequired' | translate }}</small>
+<div class="user-profile">
+  <div class="container">
+    <div class="profile-layout">
+      <!-- Sidebar Navigation -->
+      <aside class="profile-sidebar">
+        <div class="user-info">
+          <div class="avatar">
+            <img src="https://inkythuatso.com/uploads/thumbnails/800/2023/03/9-anh-dai-dien-trang-inkythuatso-03-15-27-03.jpg" alt="User Avatar">
+            <button class="change-avatar" title="{{ 'profile.changeAvatar' | translate }}">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+              </svg>
+            </button>
+          </div>
+          <h2>{{ user.fullname }}</h2>
+          <p>{{ user.email }}</p>
         </div>
 
-        <label>{{ 'profile.phone' | translate }}:</label>
-        <input formControlName="phone_number" type="text" [readonly]="!isEditingContact" />
-        <div *ngIf="userContactForm.get('phone_number')?.invalid && userContactForm.get('phone_number')?.touched">
-          <small style="color:red;">{{ 'profile.phoneInvalid' | translate }}</small>
+        <nav class="profile-nav">
+          <button 
+            class="nav-item"
+            *ngFor="let tab of profileTabs"
+            [class.active]="activeTab === tab.key"
+            (click)="setActiveTab(tab.key)"
+          >
+            <span class="nav-icon">{{ tab.icon }}</span>
+            <span>{{ tab.label | translate }}</span>
+          </button>
+        </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="profile-content">
+        <!-- Personal Information -->
+        <div class="content-section" *ngIf="activeTab === 'personal'">
+          <div class="section-header">
+            <h3>{{ 'profile.personalInfo' | translate }}</h3>
+            <button class="edit-btn" (click)="toggleEdit('personal')" [class.editing]="isEditing.personal">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+              </svg>
+              {{ isEditing.personal ? ('profile.save' | translate) : ('profile.edit' | translate) }}
+            </button>
+          </div>
+
+          <form [formGroup]="userContactForm" class="profile-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label>{{ 'profile.fullname' | translate }} *</label>
+                <input type="text" formControlName="fullname" [readonly]="!isEditing.personal" />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>{{ 'profile.email' | translate }} *</label>
+                <input type="email" formControlName="email" name="email" [readonly]="!isEditing.personal" required>
+              </div>
+              <div class="form-group">
+                <label>{{ 'profile.phone' | translate }} *</label>
+                <input type="tel" formControlName="phone_number" name="phone" [readonly]="!isEditing.personal" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>{{ 'profile.birthDate' | translate }}</label>
+                <input type="date" formControlName="date_of_birth" name="birthDate" [readonly]="!isEditing.personal">
+              </div>
+            </div>
+          </form>
         </div>
 
-        <button type="button" *ngIf="!isEditingContact" (click)="toggleEditContact()">{{ 'profile.edit' | translate }}</button>
-        <button type="submit" *ngIf="isEditingContact">{{ 'profile.saveChanges' | translate }}</button>
-      </form>
-    </div>
+        <!-- Address Information -->
+        <div class="content-section" *ngIf="activeTab === 'address'">
+          <div class="section-header">
+            <h3>{{ 'profile.addressInfo' | translate }}</h3>
+            <button class="edit-btn" (click)="toggleEdit('address')" [class.editing]="isEditing.address">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+              </svg>
+              {{ isEditing.address ? ('profile.save' | translate) : ('profile.edit' | translate) }}
+            </button>
+          </div>
 
-    <!-- Tab 3: Đổi mật khẩu -->
-    <div *ngIf="activeTab === 'password'">
-      <h2>{{ 'profile.passwordChange' | translate }}</h2>
-      <form [formGroup]="changePasswordForm" (ngSubmit)="updatePassword()">
-        <label>{{ 'profile.currentPassword' | translate }}:</label>
-        <input type="password" formControlName="current_password" />
-        <div *ngIf="changePasswordForm.get('current_password')?.invalid && changePasswordForm.get('current_password')?.touched">
-          <small style="color:red;">{{ 'profile.currentPasswordRequired' | translate }}</small>
+          <form [formGroup]="userContactForm" class="profile-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label>{{ 'profile.zipCode' | translate }} *</label>
+                <input type="text" formControlName="zip_code" placeholder="123-4567" [readonly]="!isEditing.address" required>
+              </div>
+              <div class="form-group">
+                <label>{{ 'profile.prefecture' | translate }} *</label>
+                <input type="text" formControlName="prefecture" [readonly]="!isEditing.address" required>
+                  
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>{{ 'profile.city' | translate }} *</label>
+              <input type="text" formControlName="city" [readonly]="!isEditing.address" required>
+            </div>
+
+            <div class="form-group">
+              <label>{{ 'profile.addressLine1' | translate }} *</label>
+              <input type="text" formControlName="address_line1" [readonly]="!isEditing.address" required>
+            </div>
+
+            <div class="form-group">
+              <label>{{ 'profile.addressLine2' | translate }}</label>
+              <input type="text" formControlName="address_line2" [readonly]="!isEditing.address">
+            </div>
+          </form>
         </div>
 
-        <label>{{ 'profile.newPassword' | translate }}:</label>
-        <input type="password" formControlName="new_password" />
-        <div *ngIf="changePasswordForm.get('new_password')?.invalid && changePasswordForm.get('new_password')?.value">
-          <small style="color:red;">{{ 'profile.newPasswordTooShort' | translate }}</small>
+        <!-- Payment Methods -->
+        <div class="content-section" *ngIf="activeTab === 'payment'">
+          <div class="section-header">
+            <h3>{{ 'profile.paymentMethods' | translate }}</h3>
+            <button class="add-btn" (click)="addPaymentMethod()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+              </svg>
+              {{ 'profile.addPaymentMethod' | translate }}
+            </button>
+          </div>
+
+          <div class="payment-methods">
+            <div class="payment-card" *ngFor="let method of paymentMethods">
+              <div class="payment-info">
+                <div class="payment-type">
+                  <span class="type-icon">{{ method.type === 'credit' ? '💳' : '🏦' }}</span>
+                  <div>
+                    <h4>{{ method.name }}</h4>
+                    <p>{{ method.details }}</p>
+                  </div>
+                </div>
+                <div class="payment-badge" *ngIf="method.isDefault">
+                  {{ 'profile.default' | translate }}
+                </div>
+              </div>
+              <div class="payment-actions">
+                <button class="action-btn secondary" (click)="editPaymentMethod(method.id)">{{ 'profile.edit' | translate }}</button>
+                <button class="action-btn secondary" *ngIf="!method.isDefault" (click)="setDefaultPayment(method.id)">{{ 'profile.setDefault' | translate }}</button>
+                <button class="action-btn danger" (click)="removePaymentMethod(method.id)">{{ 'profile.delete' | translate }}</button>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <label>{{ 'profile.confirmPassword' | translate }}:</label>
-        <input type="password" formControlName="confirm_password" />
-        <div *ngIf="changePasswordForm.get('confirm_password')?.value && changePasswordForm.errors?.['passwordMismatch']">
-          <small style="color:red;">{{ 'profile.passwordMismatch' | translate }}</small>
-        </div>
-        <div *ngIf="!changePasswordForm.errors?.['passwordMismatch'] && changePasswordForm.get('confirm_password')?.touched">
-          <small style="color:green;">✔ {{ 'profile.passwordMatch' | translate }}</small>
-        </div>
+        <!-- Security Settings -->
+        <div class="content-section" *ngIf="activeTab === 'security'">
+          <div class="section-header">
+            <h3>{{ 'profile.securitySettings' | translate }}</h3>
+          </div>
 
-        <button type="submit" [disabled]="changePasswordForm.invalid"
-          [ngStyle]="{ opacity: changePasswordForm.invalid ? 0.5 : 1 }">
-          {{ 'profile.updatePassword' | translate }}
-        </button>
-      </form>
+          <div class="security-settings">
+            <div class="security-item">
+              <div class="security-info">
+                <h4>{{ 'profile.changePassword' | translate }}</h4>
+                <p>{{ 'profile.changePasswordDesc' | translate }}</p>
+              </div>
+              <button class="action-btn primary" (click)="changePassword()">{{ 'profile.changePassword' | translate }}</button>
+            </div>
+
+            <!-- Form đổi mật khẩu -->
+            <div class="password-form mt-3" *ngIf="isEditingPassword">
+              <form [formGroup]="changePasswordForm" (ngSubmit)="updatePassword()">
+                <div *ngIf="hasLocalPassword" class="form-group mb-3">
+                  <label for="current_password">{{ 'profile.currentPassword' | translate }}</label>
+                  <input id="current_password" type="password" formControlName="current_password" class="form-control" [placeholder]="'profile.enterCurrentPassword' | translate" />
+                </div>
+
+                <div class="form-group mb-3">
+                  <label for="new_password">{{ 'profile.newPassword' | translate }}</label>
+                  <input id="new_password" type="password" formControlName="new_password" class="form-control" [placeholder]="'profile.enterNewPassword' | translate" />
+                </div>
+
+                <div class="form-group mb-3">
+                  <label for="confirm_password">{{ 'profile.confirmPassword' | translate }}</label>
+                  <input id="confirm_password" type="password" formControlName="confirm_password" class="form-control" [placeholder]="'profile.confirmNewPassword' | translate" />
+                </div>
+
+                <div *ngIf="changePasswordForm.get('confirm_password')?.value && changePasswordForm.errors?.['passwordMismatch']">
+                  <small style="color:red;">{{ 'profile.passwordMismatch' | translate }}</small>
+                </div>
+                <div *ngIf="!changePasswordForm.errors?.['passwordMismatch'] && changePasswordForm.get('confirm_password')?.touched">
+                  <small style="color:green;">✔ {{ 'profile.passwordMatch' | translate }}</small>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100" [disabled]="changePasswordForm.invalid">
+                  {{ 'profile.savePassword' | translate }}
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
   </div>
 </div>

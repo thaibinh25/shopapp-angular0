@@ -6,6 +6,11 @@ export interface Order {
     email: string;
     phone_number: string; 
     address: string;
+    zip_code: string;
+    prefecture: string;
+    city: string;
+    address_line1: string;
+    address_line2: string
     note: string;
     order_date: Date; 
     status: string;

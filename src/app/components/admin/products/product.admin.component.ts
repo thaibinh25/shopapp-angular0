@@ -23,6 +23,7 @@ export class ProductAdminComponent implements OnInit {
   selectedProduct: ProductResponse = this.resetProduct();
   keyword = '';
   selectedCategoryId = 0;
+  selectedCategoryIds: number[] =[];
   currentPage = 1;
   itemsPerPage = 12;
   visiblePages: number[] = [];
@@ -30,9 +31,14 @@ export class ProductAdminComponent implements OnInit {
   imagePreview: string | ArrayBuffer | null = null;  // Biến chứa ảnh preview
   selectedImages: FileList | null = null;
   selectedBrandId: number = 0;
+  selectedBrandIds: number[] = [];
   minPrice: number | null = null;
   maxPrice: number | null = null;
   isSubmitting = false;
+  minRating: number | null = null;
+  badge: string | null = null;
+  sortBy: string = 'newest';
+
 
   currentImages: { id: number, url: string }[] = [];  // ảnh đang có (có id từ DB)
   newImages: File[] = [];                              // ảnh mới được chọn
@@ -50,8 +56,19 @@ export class ProductAdminComponent implements OnInit {
   ngOnInit(): void {
     this.loadCategories();
     this.loadBrands();
-    this.loadProducts();
-    
+    //this.loadProducts();
+    this.getProducts(
+      this.keyword,
+      this.selectedCategoryIds,
+      this.selectedBrandIds,
+      this.minPrice,
+      this.maxPrice,
+      this.minRating,
+      this.badge,
+      this.sortBy,
+      this.currentPage - 1,
+      this.itemsPerPage
+    );
 
   }
 
@@ -85,7 +102,7 @@ export class ProductAdminComponent implements OnInit {
   }
 
   loadProducts(): void {
-    this.productService.getProducts(this.keyword, this.selectedCategoryId, this.selectedBrandId, this.minPrice, this.maxPrice, this.currentPage - 1, this.itemsPerPage)
+    this.productService.getProducts(this.keyword, this.selectedCategoryIds, this.selectedBrandIds, this.minPrice, this.maxPrice, this.minRating, this.badge,this.sortBy, this.currentPage -1, this.itemsPerPage)
       .subscribe({
         next: (response: any) => {
           debugger
@@ -98,6 +115,35 @@ export class ProductAdminComponent implements OnInit {
         }
       });
   }
+
+  getProducts(
+      keyword: string,
+      categoryIds: number[],
+      brandIds: number[],
+      minPrice: number | null,
+      maxPrice: number | null,
+      minRating: number | null,
+      badge: string | null,
+      sortBy: string,
+      page: number,
+      limit: number
+    ) {
+      this.productService.getProducts(
+        keyword, categoryIds, brandIds, minPrice, maxPrice, minRating, badge,sortBy, page, limit
+      ).subscribe({
+        next: (response: any) => {
+          debugger
+          this.products = response.products;
+          this.totalPages = response.totalPage;
+      
+          this.visiblePages = this.generateVisiblePageArray(this.currentPage, this.totalPages);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        },
+        error: (error: any) => {
+          console.error('Error fetching products:', error);
+        }
+      });
+    }
 
   saveProduct(): void {
     const productDto = {

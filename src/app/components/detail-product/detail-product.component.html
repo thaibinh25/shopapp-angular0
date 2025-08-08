@@ -1,59 +1,138 @@
-<div class="container">
-  <div class="intro-section">
-      <!-- Bạn có thể thêm nội dung giới thiệu ở đây nếu cần -->
-  </div>    
-  <div class="row">
-      <div class="col-md-6">
-          <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
-              <div class="carousel-inner">
-                  <div *ngFor="let image of product?.product_images; let i = index" 
-                       class="carousel-item" [ngClass]="{'active': i === currentImageIndex}">
-                      <img [src]="image.image_url" class="product-image" alt="Product Image" loading="lazy">
-                  </div>
-              </div>
-              <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" 
-                      data-bs-slide="prev" (click)="previousImage()">
-                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-              </button>
-              <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" 
-                      data-bs-slide="next" (click)="nextImage()">
-                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
-              </button>
-          </div>
 
-          <div class="thumbnail-container">
-              <div *ngFor="let image of product?.product_images; let i = index" 
-                   class="thumbnail-item" 
-                   [ngClass]="{'active': i === currentImageIndex}"
-                   (click)="thumbnailClick(i)">
-                  <img [src]="image.image_url" class="thumbnail-image" alt="Thumbnail Image">
-              </div>
+<div class="product-detail">
+    <div class="container">
+      <div class="product-content">
+        <!-- Product Images -->
+        <div class="product-images">
+          <div class="main-image">
+            <button class="arrow left" (click)="previousImage()">‹</button>
+            <img *ngIf="selectedImage" [src]="selectedImage" [alt]="product?.name" />
+            <button class="arrow right" (click)="nextImage()">›</button>
           </div>
+          <div class="thumbnail-images">
+            <div
+              class="thumbnail"
+              *ngFor="let image of product?.product_images"
+              [class.active]="selectedImage === image.image_url"
+              (click)="selectImage(image.image_url)"
+            >
+              <img [src]="image.image_url" [alt]="product?.name" />
+            </div>
+          </div>
+        </div>
+  
+        <!-- Product Info -->
+        <div class="product-info">
+          <div class="product-header">
+            <h1>{{ product?.name }}</h1>
+            <!-- Product Rating -->
+            <div class="product-rating" *ngIf="product?.rating">
+              <ng-container *ngFor="let star of [1, 2, 3, 4, 5]; let i = index">
+                <span class="star" [class.filled]="(product?.rating ?? 0) > i">★</span>
+              </ng-container>
+              <span class="rating-number">({{ product?.rating }})</span>
+            </div>
+          </div>
+  
+          <div class="price-section">
+            <div class="current-price">¥{{ product?.price | number }}</div>
+          </div>
+  
+          <!-- Estimated Delivery Date -->
+          <div class="delivery-date mt-2 mb-3" style="font-size: 15px; color: #2d3748;">
+            <svg width="16" height="16" fill="#4a5568" viewBox="0 0 24 24" style="margin-right: 6px; vertical-align: middle;">
+              <path d="M7 10h5v5H7z"></path>
+              <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 
+              2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 
+              2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"></path>
+            </svg>
+            <strong>お届け予定日：</strong> 最短翌日お届け
+          </div>
+  
+          <!-- Quantity -->
+          <div class="quantity-section">
+            <h3>数量</h3>
+            <div class="quantity-controls">
+              <button class="qty-btn" (click)="decreaseQuantity()" [disabled]="quantity <= 1">-</button>
+              <input type="number" [(ngModel)]="quantity" min="1" class="qty-input" />
+              <button class="qty-btn" (click)="increaseQuantity()">+</button>
+            </div>
+          </div>
+  
+          <!-- Action Buttons -->
+          <div class="action-buttons">
+            <button class="add-to-cart-btn" (click)="addToCart()">カートに追加</button>
+            <button class="buy-now-btn" (click)="buyNow()">今すぐ購入</button>
+          </div>
+  
+          <!-- Warranty & Support -->
+          <div class="support-info">
+            <div class="support-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <span>1年間のメーカー保証</span>
+            </div>
+            <div class="support-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+                />
+              </svg>
+              <span>全国送料無料</span>
+            </div>
+            <div class="support-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                />
+              </svg>
+              <span>30日間返品保証</span>
+            </div>
+          </div>
+        </div>
       </div>
-
-      <div class="col-md-6">
-          <div class="product-details">
-              <h2>{{ product?.name }}</h2>
-              <p>{{ product?.description }}</p>
-              <p class="product-price">{{ 'product.price' | translate }} ${{ product?.price }}</p>
-
-              <div class="product-actions">
-                  <button class="btn btn-primary" (click)="addToCart()">
-                      {{ 'product.addToCart' | translate }}
-                  </button>
-                  <button class="btn btn-success" (click)="buyNow()">
-                      {{ 'product.buyNow' | translate }}
-                  </button>
-              </div>
-
-              <div class="product-quantity">
-                  <div class="border-wrapper">
-                      <button (click)="decreaseQuantity()">-</button>
-                      <input type="text" [value]="quantity">
-                      <button (click)="increaseQuantity()">+</button>
-                  </div>
-              </div>
+  
+      <!-- Product Tabs -->
+      <div class="product-tabs">
+        <div class="tab-headers">
+          <button class="tab-header" [class.active]="activeTab === 'description'" (click)="setActiveTab('description')">
+            商品説明
+          </button>
+          <button class="tab-header" [class.active]="activeTab === 'specs'" (click)="setActiveTab('specs')">
+            仕様
+          </button>
+          <button class="tab-header" [class.active]="activeTab === 'reviews'" (click)="setActiveTab('reviews')">
+            レビュー
+          </button>
+        </div>
+  
+        <div class="tab-content">
+          <!-- Description Panel -->
+          <div class="tab-panel" *ngIf="activeTab === 'description'">
+            <p>{{ product?.description }}</p>
           </div>
-      </div>      
-  </div>    
-</div>
+  
+          <!-- Reviews Panel -->
+          <div class="tab-panel" *ngIf="activeTab === 'reviews'">
+            <h3>レビュー</h3>
+            <div class="reviews-summary">
+              <div class="rating-overview">
+                <span class="rating-number">{{ product?.rating ?? 0 }}</span>
+                <div class="stars">
+                  <ng-container *ngFor="let star of [1, 2, 3, 4, 5]; let i = index">
+                    <span class="star" [class.filled]="(product?.rating ?? 0) > i">★</span>
+                  </ng-container>
+                </div>
+                <span class="total-reviews">{{ product?.reviews ?? 0 }}件のレビュー</span>
+              </div>
+            </div>
+            <div class="review-placeholder">
+              <p>レビューシステムは開発中です。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

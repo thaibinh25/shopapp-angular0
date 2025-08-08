@@ -1,34 +1,99 @@
-<div class="container mt-4">
-  <h2 class="mb-4">{{ 'orderHistory.title' | translate }}</h2>
 
-  <div *ngIf="orders.length === 0">
-    <p>{{ 'orderHistory.noOrders' | translate }}</p>
-  </div>
+<div class="order-history">
+  <div class="container">
+    <div class="page-header">
+      <h1>{{ 'orderHistory.title' | translate }}</h1>
+      <p class="page-subtitle">{{ 'orderHistory.subtitle' | translate }}</p>
+    </div>
 
-  <div *ngIf="orders.length > 0">
-    <table class="table table-bordered">
-      <thead>
-        <tr>
-          <th>{{ 'orderHistory.id' | translate }}</th>
-          <th>{{ 'orderHistory.orderDate' | translate }}</th>
-          <th>{{ 'orderHistory.status' | translate }}</th>
-          <th>{{ 'orderHistory.total' | translate }}</th>
-          <th>{{ 'orderHistory.view' | translate }}</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let order of orders">
-          <td>{{ order.id }}</td>
-          <td>{{ order.order_date | date: 'dd/MM/yyyy' }}</td>
-          <td>{{ order.status }}</td>
-          <td>{{ order.total_money | number:'1.0-2' }} USD</td>
-          <td>
-            <button (click)="viewOrderDetail(order.id)" class="btn btn-sm btn-primary">
-              {{ 'orderHistory.viewBtn' | translate }}
+    <!-- Filter Tabs -->
+    <div class="order-filters">
+      <button 
+            class="filter-tab"
+            *ngFor="let filter of orderFilters"
+            [class.active]="activeFilter === filter.key"
+            (click)="setActiveStatus(filter.key)"
+          >
+          {{ filter.label | translate }}
+            <span class="count">({{ getOrderCount(filter.key) }})</span>
+          </button>
+    </div>
+
+    <!-- Orders List -->
+    <div class="orders-list" *ngIf="filteredOrders.length > 0">
+      <div class="order-card" *ngFor="let order of filteredOrders">
+        <div class="order-header">
+          <div class="order-info">
+            <h3>{{ 'orderHistory.orderNumber' | translate }}: {{ order.id }}</h3>
+            <div class="order-meta">
+              <span class="order-date">{{ order.order_date | date:'yyyy年MM月dd日' }}</span>
+              <span class="order-status" [class]="'status-' + order.status">
+                {{ getStatusLabel(order.status) }}
+              </span>
+            </div>
+          </div>
+          <div class="order-total">
+            <span class="total-label">{{ 'orderHistory.total' | translate }}</span>
+            <span class="total-amount">¥{{ order.total_money | number }}</span>
+          </div>
+        </div>
+
+        <div class="order-items">
+          <div class="order-item" *ngFor="let item of order.order_details">
+            <div class="item-image">
+              <img [src]="item.product.thumbnail" [alt]="item.product.name">
+            </div>
+            <div class="item-details">
+             
+              <h4>{{ item.product.name }}</h4>
+              <div class="item-price">
+                ¥{{ item.price | number }} × {{ item.number_of_products }}個
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="order-actions">
+          <!--<div class="shipping-info" *ngIf="order.trackingNumber">
+            <div class="tracking">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17M17 13v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6"></path>
+              </svg>
+              <span>追跡番号: {{ order.trackingNumber }}</span>
+            </div>
+            <div class="delivery" *ngIf="order.estimatedDelivery">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              </svg>
+              <span>お届け予定: {{ order.estimatedDelivery | date:'MM月dd日' }}</span>
+            </div>
+          </div>-->
+          <div class="action-buttons">
+            <button class="action-btn secondary" (click)="viewOrderDetail(order.id)">
+              {{ 'orderHistory.viewDetail' | translate }}
             </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+            <button class="action-btn secondary" *ngIf="order.status === 'delivered'" (click)="reorder(order.id)">
+              {{ 'orderHistory.reorder' | translate }}
+            </button>
+            <button class="action-btn secondary" *ngIf="order.status === 'delivered'" (click)="writeReview(order.id)">
+              {{ 'orderHistory.writeReview' | translate }}
+            </button>
+            <!--<button class="action-btn primary" *ngIf="order.trackingNumber" (click)="trackOrder(order.trackingNumber)">
+              配送状況を確認
+            </button>-->
+          </div>
+        </div>
+      </div>
+    </div>
+
+     <!-- Empty State -->
+     <div class="empty-state" *ngIf="filteredOrders.length === 0">
+      <div class="empty-icon">📦</div>
+      <h3>{{ 'orderHistory.emptyTitle' | translate }}</h3>
+      <p>{{ 'orderHistory.emptyMessage' | translate }}</p>
+      <button class="shop-now-btn" (click)="goToShopping()">
+        {{ 'orderHistory.shopNow' | translate }}
+      </button>
+    </div>
   </div>
 </div>

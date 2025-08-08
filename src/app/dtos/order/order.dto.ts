@@ -72,6 +72,11 @@
       email: string;
       phone_number: string;
       address: string;
+      zip_code: string;
+      prefecture: string;
+      city: string;
+      address_line1: string;
+      address_line2: string;
       note: string;
       total_money: number;
       shipping_method: string;
@@ -85,6 +90,11 @@
         this.email = data.email;
         this.phone_number = data.phone_number;
         this.address = data.address;
+        this.zip_code= data.zip_code;
+        this.prefecture= data.prefecture;
+        this.city = data.city;
+        this.address_line1 = data.address_line1;
+        this.address_line2 = data.address_line2;
         this.note = data.note;
         this.total_money = data.total_money;
         this.shipping_method = data.shipping_method;

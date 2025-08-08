@@ -1,0 +1,12 @@
+<section class="products-section">
+    <div class="container">
+      <div class="products-layout">
+        <aside class="filter-sidebar">
+          <app-product-filter (filterChange)="onFilterChange($event)"></app-product-filter>
+        </aside>
+        <div class="products-content">
+          <app-product-list [filters]="currentFilters"></app-product-list>
+        </div>
+      </div>
+    </div>
+  </section>

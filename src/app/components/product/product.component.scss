@@ -1,0 +1,33 @@
+.products-section {
+    padding: 2rem 0;
+    background: #f7fafc;
+    .container {
+      max-width:  95% !important;
+      width: 100%;
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    .products-layout {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 2rem;
+      margin-top: 2rem;
+
+      .filter-sidebar {
+        position: relative;
+      }
+
+      .products-content {
+        min-width: 0; // Prevents grid overflow
+      }
+    }
+  
+  
+    @media (max-width: 768px) {
+      .products-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+  }
+  

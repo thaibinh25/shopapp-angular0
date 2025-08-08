@@ -67,6 +67,7 @@ export class OauthCallbackComponent implements OnInit {
       error: (err) => {
         this.loading = false;
         alert('Đăng nhập Google thất bại');
+        this.router.navigate(['/login']);
         console.error(err);
       }
     });

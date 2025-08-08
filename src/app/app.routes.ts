@@ -13,7 +13,10 @@ import { adminRoutes } from './components/admin/admin.routing';
 import { OrderHistoryComponent } from './components/order.history/order.history.component';
 import { NotificationDetailComponent } from './components/notification-detail/notification-detail.component';
 import { OauthCallbackComponent } from './components/oauth.callback/oauth.callback.component';
-
+import { ProductComponent } from './components/product/product.component';
+import { SupportComponent } from './components/support/support.component';
+import { ContactComponent } from './components/contact/contact.component';
+import { RegisterV1Component } from './components/register-v1/register-v1.component';
 
 
 
@@ -21,6 +24,8 @@ export const routes: Routes = [
     { path: '', component: HomeComponent },
     { path: 'login', component: LoginComponent },
     { path: 'register', component: RegisterComponent },
+    { path: 'registerV1', component: RegisterV1Component },
+    { path: 'products', component:  ProductComponent},
     { path: 'products/:id', component: DetailProductComponent },
     { path: 'orders', component: OrderComponent, canActivate: [AuthGuardFn] },
     { path: 'user-profile', component: UserProfileComponent, canActivate: [AuthGuardFn] },
@@ -33,7 +38,9 @@ export const routes: Routes = [
       canActivate: [AdminGuardFn],
       children: adminRoutes, 
     },
-    {path: 'oauth2/callback' ,component: OauthCallbackComponent}
+    {path: 'oauth2/callback' ,component: OauthCallbackComponent},
+    {path: 'support', component:  SupportComponent},
+    {path: 'contact', component:  ContactComponent},
     
   ];
 

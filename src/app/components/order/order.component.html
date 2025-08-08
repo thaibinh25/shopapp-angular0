@@ -1,156 +1,317 @@
-<div class="container">
-    <div class="intro-section">
-      <h1>{{ 'order.title' | translate }}</h1>
+
+<div class="order-page">
+  <div class="container">
+    <!-- Progress Steps -->
+    <div class="progress-steps">
+      <div class="step" [class.active]="currentStep >= 1" [class.completed]="currentStep > 1">
+        <div class="step-number">1</div>
+        <span>{{ 'order.step.cartReview' | translate }}</span>
+      </div>
+      <div class="step" [class.active]="currentStep >= 2" [class.completed]="currentStep > 2">
+        <div class="step-number">2</div>
+        <span>{{ 'order.step.shippingInfo' | translate }}</span>
+      </div>
+      <div class="step" [class.active]="currentStep >= 3">
+        <div class="step-number">3</div>
+        <span>{{ 'order.step.paymentConfirmation' | translate }}</span>
+      </div>
     </div>
-  
-    <form [formGroup]="orderForm" *ngIf="cartItems.length > 0">
-      <div class="row">
-        <div class="col-md-6">
-          <h2 class="product-header">{{ 'order.recipientInfo' | translate }}</h2>
-  
-          <div class="mb-3">
-            <label for="fullname" class="form-label">{{ 'order.fullname' | translate }}</label>
-            <input type="text" formControlName="fullname" class="form-control" id="fullname"
-                   [class.is-invalid]="orderForm.get('fullname')!.invalid && orderForm.get('fullname')!.touched">
-            <div *ngIf="orderForm.get('fullname')!.invalid && orderForm.get('fullname')!.touched" class="invalid-feedback">
-              {{ 'order.fullnameRequired' | translate }}
+    <div class="order-content">
+      <!-- Step 1: Cart Review -->
+      <div class="order-section" *ngIf="currentStep === 1">
+        <h2>{{ 'order.review.title' | translate }}</h2>
+        <div class="cart-items">
+          <div class="cart-item" *ngFor="let item of cartItems">
+            <div class="item-image">
+              <img [src]="item.product.thumbnail" alt="Product Image" class="product-image">
             </div>
-          </div>
-  
-          <div class="mb-3">
-            <label for="email" class="form-label">{{ 'order.email' | translate }}</label>
-            <input type="text" formControlName="email" class="form-control" id="email"
-                   [class.is-invalid]="orderForm.get('email')!.invalid && orderForm.get('email')!.touched">
-            <div *ngIf="orderForm.get('email')!.invalid && orderForm.get('email')!.touched" class="invalid-feedback">
-              {{ orderForm.get('email')!.hasError('email') ? ('order.emailInvalid' | translate) : ('order.emailRequired' | translate) }}
+            <div class="item-details">
+
+              <h3>{{ item.product.name }}</h3>
+
             </div>
-          </div>
-  
-          <div class="mb-3">
-            <label for="phone" class="form-label">{{ 'order.phone' | translate }}</label>
-            <input type="text" class="form-control" formControlName="phone_number" id="phone"
-                   [class.is-invalid]="orderForm.get('phone_number')!.invalid && orderForm.get('phone_number')!.touched">
-            <div *ngIf="orderForm.get('phone_number')!.invalid && orderForm.get('phone_number')!.touched" class="invalid-feedback">
-              {{ 'order.phoneRequired' | translate }}
+            <div class="item-quantity">
+              <button class="btn btn-sm btn-outline-secondary" (click)="decreaseQuantity(item.product.id)">−</button>
+              <span>{{ item.quantity }}</span>
+              <button class="btn btn-sm btn-outline-secondary" (click)="increaseQuantity(item.product.id)">+</button>
             </div>
-          </div>
-  
-          <div class="mb-3">
-            <label for="address" class="form-label">{{ 'order.address' | translate }}</label>
-            <input type="text" class="form-control" formControlName="address" id="address"
-                   [class.is-invalid]="orderForm.get('address')!.invalid && orderForm.get('address')!.touched">
-            <div *ngIf="orderForm.get('address')!.invalid && orderForm.get('address')!.touched" class="invalid-feedback">
-              {{ 'order.addressRequired' | translate }}
+            <div class="item-price">
+              <div class="unit-price">¥{{ item.product.price| number }}</div>
+              <div class="total-price">¥{{ (item.product.price * item.quantity) | number }}</div>
             </div>
-          </div>
-  
-          <div class="mb-3">
-            <label for="note" class="form-label">{{ 'order.note' | translate }}</label>
-            <input type="text" class="form-control" formControlName="note" id="note">
-          </div>
-  
-          <div class="mb-3">
-            <label for="shippingMethod">{{ 'order.shippingMethod' | translate }}</label>
-            <select class="form-control" id="shippingMethod" formControlName="shipping_method">
-              <option value="express">{{ 'order.shippingExpress' | translate }}</option>
-              <option value="normal">{{ 'order.shippingNormal' | translate }}</option>
-            </select>
-          </div>
-  
-          <div class="mb-3">
-            <label for="paymentMethod">{{ 'order.paymentMethod' | translate }}</label>
-            <select class="form-control" id="paymentMethod" formControlName="payment_method" (change)="onPaymentMethodChange()">
-              <option value="cod">{{ 'order.paymentCod' | translate }}</option>
-              <option value="visa">{{ 'order.paymentVisa' | translate }}</option>
-            </select>
-          </div>
-  
-          <div *ngIf="orderForm.get('payment_method')?.value === 'visa'" class="visa-card-form mt-3">
-            <label for="card-element">{{ 'order.visaInfo' | translate }}</label>
-            <div id="card-element" class="form-control" style="padding: 12px;"></div>
-            <div id="card-errors" class="text-danger mt-2" role="alert"></div>
-          </div>
-        </div>
-  
-        <div class="col-md-6">
-          <h2 class="product-order">{{ 'order.orderedProducts' | translate }}</h2>
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th scope="col" class="text-start">{{ 'order.product' | translate }}</th>
-                <th scope="col">{{ 'order.quantity' | translate }}</th>
-                <th scope="col">{{ 'order.unitPrice' | translate }}</th>
-                <th scope="col">{{ 'order.totalPrice' | translate }}</th>
-                <th scope="col">{{ 'order.action' | translate }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <ng-container *ngFor="let item of cartItems">
-                <tr>
-                  <td>
-                    <div class="product-info">
-                      <img [src]="item.product.thumbnail" alt="Product Image" class="product-image" />
-                      <div class="product-name-wrapper">
-                        <span class="product-name">{{ item.product.name }}</span>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="quantity-control d-flex align-items-center">
-                      <button class="btn btn-sm btn-outline-secondary" (click)="decreaseQuantity(item.product.id)">−</button>
-                      <span class="mx-2">{{ item.quantity }}</span>
-                      <button class="btn btn-sm btn-outline-secondary" (click)="increaseQuantity(item.product.id)">+</button>
-                    </div>
-                  </td>
-                  <td>{{ item.product.price | number:'1.2-2' }}</td>
-                  <td>{{ (item.product.price * item.quantity) | number:'1.2-2' }}</td>
-                  <td>
-                    <button type="button" class="btn btn-danger btn-sm" (click)="removeFromCart(item.product.id)">
-                      <i class="bi bi-trash"></i>
-                      <span class="btn-text">{{ 'order.delete' | translate }}</span>
-                    </button>
-                  </td>
-                </tr>
-              </ng-container>
-            </tbody>
-          </table>
-  
-          <div class="text-start mt-3">
-            <h4 class="header-text text-end">{{ 'order.totalAmount' | translate }}: {{ totalAmount | number:'1.2-2'}}</h4>
-            <div *ngIf="couponApplied" class="text-end text-success">
-              {{ 'order.discount' | translate }}: -{{ discountAmount | number:'1.2-2' }} ({{ orderForm.get('coupon_code')?.value }})
-            </div>
-            <h4 class="header-text text-end">
-              {{ 'order.finalAmount' | translate }}: {{ Math.max(totalAmount - discountAmount, 0) | number:'1.2-2' }}
-            </h4>
-          </div>
-  
-          <div class="mt-3">
-            <h4 class="product-header">{{ 'order.couponTitle' | translate }}</h4>
-            <div class="input-group">
-              <input type="text" class="form-control" formControlName="coupon_code"
-                     [placeholder]="'order.couponPlaceholder' | translate" (keydown.enter)="onCouponEntered()"
-                     (blur)="onCouponEntered()" />
-              <span class="input-group-text" *ngIf="couponApplied">✓</span>
-            </div>
-  
-            <div *ngIf="couponError" class="text-danger mt-1">
-              {{ couponError }}
-            </div>
-          </div>
-  
-          <div class="text-start mt-3">
-            <button (click)="placeOrder()"
-                    [disabled]="isProcessing || (orderForm.get('coupon_code')?.value && !couponApplied) || !orderForm.valid"
-                    class="btn btn-gradient" type="button">
-              {{ isProcessing ? ('order.processing' | translate) : ('order.placeOrder' | translate) }}
+            <button type="button" class="btn btn-danger btn-sm" (click)="removeFromCart(item.product.id)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path
+                  d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14zM10 11v6M14 11v6">
+                </path>
+              </svg>
             </button>
           </div>
         </div>
+        <!--<div class="cart-summary">
+          <div class="summary-row">
+            <span>小計</span>
+            <span>¥{{ getSubtotal() | number }}</span>
+          </div>
+          <div class="summary-row">
+            <span>送料</span>
+            <span>無料</span>
+          </div>
+          <div class="summary-row total">
+            <span>合計</span>
+            <span>¥{{ getTotal() | number }}</span>
+          </div>
+        </div>-->
       </div>
-    </form>
+
+      <!-- Step 2: Shipping Information -->
+      <div class="order-section" *ngIf="currentStep === 2">
+        <h2>{{ 'order.shipping.title' | translate }}</h2>
+        <form class="shipping-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label>{{ 'order.shipping.lastName' | translate }}</label>
+              <input type="text" [(ngModel)]="shippingAddress.lastName" name="lastName" required>
+            </div>
+            <div class="form-group">
+              <label>{{ 'order.shipping.firstName' | translate }}</label>
+              <input type="text" [(ngModel)]="shippingAddress.firstName" name="firstName" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>{{ 'order.shipping.email' | translate }}</label>
+              <input type="email" [(ngModel)]="shippingAddress.email" name="email" required>
+            </div>
+            <div class="form-group">
+              <label>{{ 'order.shipping.phone' | translate }}</label>
+              <input type="tel" [(ngModel)]="shippingAddress.phone" name="phone" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>{{ 'order.shipping.zipCode' | translate }}</label>
+              <input type="text" [(ngModel)]="shippingAddress.zipCode" name="zipCode" placeholder="123-4567" required>
+            </div>
+            <div class="form-group">
+              <label>{{ 'order.shipping.prefecture' | translate }}</label>
+              <input type="text" [(ngModel)]="shippingAddress.prefecture" name="prefecture" required>
+               
+                <!-- Add more prefectures -->
+           
+            </div>
+          </div>
+          <div class="form-group">
+            <label>{{ 'order.shipping.city' | translate }}</label>
+            <input type="text" [(ngModel)]="shippingAddress.city" name="city" required>
+          </div>
+          <div class="form-group">
+            <label>{{ 'order.shipping.address1' | translate }}</label>
+            <input type="text" [(ngModel)]="shippingAddress.address_line1" name="address" required>
+          </div>
+          <div class="form-group">
+            <label>{{ 'order.shipping.address2' | translate }}</label>
+            <input type="text" [(ngModel)]="shippingAddress.address_line2" name="building">
+          </div>
+        </form>
+      </div>
+
+      <!-- Step 3: Payment Method -->
+      
+      <!-- Step 4: Order Confirmation -->
+      <div class="order-section" *ngIf="currentStep === 3">
+        <h2>{{ 'order.payment.title' | translate }}</h2>
+        <!-- Payment Method -->
+        <div class="order-section" *ngIf="currentStep === 3">
+         
   
-    <div *ngIf="cartItems.length === 0" class="text-center my-5">
-      <p class="empty-cart-text">{{ 'order.emptyCart' | translate }}</p>
+          <!-- Payment Method Options -->
+          <div class="payment-methods">
+            <div class="payment-method" *ngFor="let method of paymentMethods"
+              [class.selected]="selectedPaymentMethod === method.type" (click)="selectPaymentMethod(method.type)">
+              <div class="payment-icon">{{ method.icon }}</div>
+              <span>{{ method.label }}</span>
+              <div class="radio-indicator"></div>
+            </div>
+          </div>
+  
+         
+          <!-- Giao diện nhập thẻ riêng -->
+          <!-- ⚠️ KHÔNG DÙNG ng-template -->
+          <div class="credit-card-form" #creditCardForm [hidden]="selectedPaymentMethod !== 'credit'">
+  
+  
+            <h3>{{ 'order.payment.cardInfo' | translate }}</h3>
+  
+            <!-- Hiển thị spinner nếu đang khởi tạo Stripe Elements -->
+            <div *ngIf="stripeInitializing" class="text-center my-2">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Đang tải Stripe...</span>
+              </div>
+            </div>
+  
+            <!-- ⚠️ SỬA ĐIỂM NÀY: Không dùng *ngIf để DOM mất -->
+            <div [ngClass]="{ 'd-none': stripeInitializing }">
+              <div class="form-group">
+                <label>Card Number</label>
+                <div id="card-number" class="form-control custom-stripe-input"></div>
+              </div>
+  
+              <div class="form-group">
+                <label>Expiration Date</label>
+                <div id="card-expiry" class="form-control custom-stripe-input"></div>
+              </div>
+  
+              <div class="form-group">
+                <label>CVC</label>
+                <div id="card-cvc" class="form-control custom-stripe-input"></div>
+              </div>
+  
+              <div *ngIf="cardBrand" class="mt-2">
+                🧾 Loại thẻ phát hiện: <strong>{{ cardBrand }}</strong>
+              </div>
+  
+              <div id="card-errors" class="text-danger mt-2"></div>
+            </div>
+          </div>
+  
+  
+  
+  
+        </div>
+        <h2><br>{{ 'order.confirmation.title' | translate }}</h2>
+
+        <!-- Order Summary -->
+        <div class="confirmation-section">
+          <h3>{{ 'order.confirmation.items' | translate }}</h3>
+          <div class="order-items">
+            <div class="order-item" *ngFor="let item of cartItems">
+              <img [src]="item.product.thumbnail" [alt]="item.product.name">
+              <div class="item-info">
+                <div class="item-name"> {{ item.product.name }}</div>
+              </div>
+              <div class="item-quantity">{{ 'order.confirmation.quantity' | translate }}: {{ item.quantity }}</div>
+
+              <div class="item-total">¥{{ (item.product.price) | number }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Shipping Address -->
+        <div class="confirmation-section">
+          <h3>{{ 'order.confirmation.addressTitle' | translate }}</h3>
+          <div class="address-display">
+            <p>{{ shippingAddress.lastName }} {{ shippingAddress.firstName }}</p>
+            <p>〒{{ shippingAddress.zipCode }}</p>
+            <p>{{ shippingAddress.prefecture }}{{ shippingAddress.city }}</p>
+            <p>{{ shippingAddress.address_line1 }}</p>
+            <p *ngIf="shippingAddress.address_line2">{{ shippingAddress.address_line2 }}</p>
+            <p>{{ shippingAddress.phone }}</p>
+          </div>
+        </div>
+
+        
+  
+
+
+        <!-- Final Total -->
+        <div class="final-total">
+          <div class="total-row">
+            <span>{{ 'order.total.subtotal' | translate }}</span>
+            <span>¥{{ getSubtotal() | number }}</span>
+          </div>
+          <div class="total-row">
+            <span>{{ 'order.total.shipping' | translate }}</span>
+            <span>無料</span>
+          </div>
+          <div class="total-row">
+            <span>{{ 'order.total.tax' | translate }}</span>
+            <span>¥{{ getTax() | number }}</span>
+          </div>
+          <div class="total-row">
+            <span>{{ 'order.total.coupon' | translate }}</span>
+            <span class="coupon">- ¥{{ discountAmount | number }}</span>
+          </div>
+          <div class="total-row grand-total">
+            <span>{{ 'order.total.total' | translate }}</span>
+            <span>¥{{ getFinalTotal() | number }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Summary Sidebar -->
+      <div class="order-sidebar">
+        <div class="sidebar-content">
+          <h3>{{ 'order.sidebar.summary' | translate }}</h3>
+          <div class="summary-items">
+            <div class="summary-item" *ngFor="let item of cartItems">
+              <span>{{ item.product.name }} × {{ item.quantity }}</span>
+              <span>¥{{ (item.product.price * item.quantity) | number }}</span>
+            </div>
+          </div>
+          <div class="summary-totals">
+            <div class="summary-row">
+              <span>{{ 'order.total.subtotal' | translate }}</span>
+              <span>¥{{ getSubtotal() | number }}</span>
+            </div>
+            <div class="summary-row">
+              <span>{{ 'order.total.shipping' | translate }}</span>
+              <span>無料</span>
+            </div>
+            <div class="summary-row" *ngIf="currentStep === 3">
+              <span>{{ 'order.total.tax' | translate }}</span>
+              <span>¥{{ getTax() | number }}</span>
+            </div>
+            <div class="summary-row" *ngIf="currentStep === 3">
+              <span>{{ 'order.total.coupon' | translate }}</span>
+              <span class="coupon">- ¥{{ discountAmount | number }}</span>
+            </div>
+            <div class="summary-row total">
+              <span>{{ 'order.total.total' | translate }}</span>
+              <span>¥{{ currentStep === 3 ? getFinalTotal() : getTotal() | number }}</span>
+            </div>
+          </div>
+
+
+          <!-- Coupon Entry Section -->
+          <form [formGroup]="orderForm" *ngIf="currentStep === 3">
+            <div class="coupon-section mt-4" [ngClass]="{ 'shake': shouldShakeCoupon }">
+              <h4 class="section-title">{{ 'order.coupon.title' | translate }}</h4>
+
+              <div class="input-group">
+                <input type="text" class="form-control" formControlName="coupon_code" placeholder="{{ 'order.coupon.placeholder' | translate }}"
+                  (keydown.enter)="onCouponEntered()" (blur)="onCouponEntered()" />
+              </div>
+              <!-- Thông báo thành công hoặc lỗi -->
+              <div *ngIf="couponApplied" class="text-success mt-1">
+                ✅ {{ 'order.coupon.success' | translate }}: <br> -¥{{ discountAmount | number }}
+              </div>
+              <div *ngIf="couponError" class="text-danger mt-1">
+                ❌ {{ couponError }}
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+
     </div>
+
+    <!-- Navigation Buttons -->
+    <div class="order-navigation">
+      <div class="left-btn">
+        <button class="nav-btn secondary" *ngIf="currentStep > 1" (click)="previousStep()">{{ 'order.nav.back' | translate }}</button>
+      </div>
+
+      <div class="right-btn">
+        <button class="nav-btn primary" *ngIf="currentStep < 3" (click)="nextStep()" [disabled]="!canProceed()">
+          {{ 'order.nav.next' | translate }}
+        </button>
+        <button class="nav-btn primary order-btn" *ngIf="currentStep === 3 " (click)="placeOrder()">
+          {{ 'order.nav.placeOrder' | translate }}
+        </button>
+      </div>
+    </div>
+
   </div>
+</div>

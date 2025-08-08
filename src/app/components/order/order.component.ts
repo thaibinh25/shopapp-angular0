@@ -15,11 +15,41 @@ import { FormGroup } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { loadStripe, Stripe, StripeCardElement } from '@stripe/stripe-js';
+import { ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
+
+import {
+  loadStripe,
+  Stripe,
+  StripeCardNumberElement,
+  StripeCardExpiryElement,
+  StripeCardCvcElement,
+  StripeCardElement,
+} from '@stripe/stripe-js';
+
 import { HttpClient } from '@angular/common/http';
 import { PaymentService } from '../../service/payment.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+
+
+
+interface ShippingAddress {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  zipCode: string;
+  prefecture: string;
+  city: string;
+  address_line1: string;
+  address_line2?: string;
+}
+
+interface PaymentMethod {
+  type: 'credit' | 'bank' | 'daibiki';
+  label: string;
+  icon: string;
+}
 
 @Component({
   selector: 'app-order',
@@ -40,9 +70,14 @@ export class OrderComponent implements OnInit {
     email: '', // Khởi tạo rỗng, sẽ được điền từ form
     phone_number: '', // Khởi tạo rỗng, sẽ được điền từ form
     address: '', // Khởi tạo rỗng, sẽ được điền từ form
+    zip_code: '',
+    prefecture: '',
+    city: '',
+    address_line1: '',
+    address_line2: '',
     note: '', // Có thể thêm trường ghi chú nếu cần
     total_money: 0, // Sẽ được tính toán dựa trên giỏ hàng và mã giảm giá
-    payment_method: 'cod', // Mặc định là thanh toán khi nhận hàng (COD)
+    payment_method: '', // Mặc định là thanh toán khi nhận hàng (COD)
     shipping_method: 'express', // Mặc định là vận chuyển nhanh (Express)
     coupon_code: '', // Sẽ được điền từ form khi áp dụng mã giảm giá
     cart_items: []
@@ -54,9 +89,45 @@ export class OrderComponent implements OnInit {
 
   stripe!: Stripe | null;
   card!: StripeCardElement;
+  cardNumberElement!: StripeCardNumberElement;
+  cardExpiryElement!: StripeCardExpiryElement;
+  cardCvcElement!: StripeCardCvcElement;
+
+  cardBrand: string = '';
+  cardComplete: boolean = false;
+
   clientSecret: string = '';
 
   isProcessing: boolean = false;
+  currentStep = 1;
+
+  shippingAddress: ShippingAddress = {
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    zipCode: '',
+    prefecture: '',
+    city: '',
+    address_line1: '',
+    address_line2: ''
+  };
+
+
+  paymentMethods: PaymentMethod[] = [
+    { type: 'credit', label: 'クレジットカード', icon: '💳' },
+    { type: 'bank', label: '銀行振込', icon: '🏦' },
+    { type: 'daibiki', label: '代引き', icon: '〒' },
+
+  ];
+
+  selectedPaymentMethod: string = '';
+  shouldShakeCoupon = false;
+  isCardComplete: boolean = false;
+  hasMountedStripe = false;
+  stripeInitializing: boolean = false;
+
+
 
 
   constructor(
@@ -69,6 +140,7 @@ export class OrderComponent implements OnInit {
     private router: Router,
     private http: HttpClient,
     private paymentService: PaymentService,
+    private translate: TranslateService
   ) {
     // Tạo FormGroup và các FormControl tương ứng
     this.orderForm = this.formBuilder.group({
@@ -76,32 +148,65 @@ export class OrderComponent implements OnInit {
       email: ['', [Validators.email]], // Sử dụng Validators.email cho kiểm tra định dạng email
       phone_number: ['', [Validators.required, Validators.minLength(6)]], // phone_number bắt buộc và ít nhất 6 ký tự
       address: ['', [Validators.required, Validators.minLength(5)]], // address bắt buộc và ít nhất 5 ký tự
+      zip_code: ['', [Validators.required, Validators.pattern(/^\d{7}$/)]],
+      prefecture: ['',[Validators.required, Validators.minLength(2)]],
+      city: ['',[Validators.required, Validators.minLength(2)]],
+      address_line1: ['',[Validators.required, Validators.minLength(5)]],
+      address_line2: [''],
       note: [''],
       shipping_method: ['express'],
-      payment_method: ['cod', Validators.required],
+      payment_method: ['', Validators.required],
       coupon_code: [''],
     });
   }
 
+  @ViewChild('creditCardForm') creditCardFormRef!: ElementRef;
   async ngOnInit() {
     this.getCartItems();
-
-    //  Lắng nghe thay đổi mã coupon và tự apply sau 1s người dùng ngừng gõ
     this.orderForm.get('coupon_code')?.valueChanges
-      .pipe(
-        debounceTime(1000),          // Đợi 1s sau khi người dùng dừng gõ
-        distinctUntilChanged()       // Chỉ thực hiện nếu giá trị khác nhau
-      )
+      .pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe(code => {
-        if (code && code.trim().length > 0) {
-          this.onCouponEntered();        // Gọi applyCoupon tự động
-        } else {
+        if (code?.trim()) this.onCouponEntered();
+        else {
           this.couponApplied = false;
           this.discountAmount = 0;
         }
       });
 
-    this.onPaymentMethodChange();
+      this.loadPaymentMethods();
+      // ✅ Lắng nghe khi đổi ngôn ngữ
+  this.translate.onLangChange.subscribe(() => {
+    this.loadPaymentMethods(); // Gọi lại để update label đa ngôn ngữ
+  });
+  }
+
+  async ngAfterViewInit(): Promise<void> {
+
+
+    if (this.selectedPaymentMethod === 'credit') {
+      await this.waitForStripeElementsToBeReady(); // 🔥 Đợi DOM sẵn sàng
+      await this.setupStripeCard();
+    }
+  }
+
+  loadPaymentMethods() {
+    this.paymentMethods = [
+      {
+        type: 'credit',
+        label: this.translate.instant('order.payment.method.credit'),
+        icon: '💳',
+      },
+      {
+        type: 'bank',
+        label: this.translate.instant('order.payment.method.bank'),
+        icon: '🏦',
+      },
+      {
+        type: 'daibiki',
+        label: this.translate.instant('order.payment.method.daibiki'),
+        icon: '〒',
+      },
+    ];
   }
 
   getCartItems() {
@@ -150,72 +255,100 @@ export class OrderComponent implements OnInit {
     });
   }
 
-  async placeOrder() {
-
-    //  Kiểm tra đăng nhập
+  async placeOrder(): Promise<void> {
+    debugger
     if (this.tokenService.getToken() == null || this.tokenService.isTokenExpired()) {
-      this.router.navigate(['/login']);
-      return;
+      this.router.navigate(['/login']); return;
     }
+    this.fillOrderFormFromShippingAddress();
 
-    //  Validate form
     if (!this.orderForm.valid) {
-      alert('Dữ liệu không hợp lệ. Vui lòng kiểm tra lại.');
-      return;
+      alert('Dữ liệu không hợp lệ. Vui lòng kiểm tra lại.'); return;
     }
 
-    //  Chuẩn bị dữ liệu order
+
     this.orderData = {
       ...this.orderData,
       total_money: this.totalAmount,
       ...this.orderForm.value,
       shipping_date: new Date().toLocaleDateString('en-CA'),
-      cart_items: this.cartItems.map(cartItem => ({
-        product_id: cartItem.product.id,
-        quantity: cartItem.quantity
-      }))
+      cart_items: this.cartItems.map(item => ({ product_id: item.product.id, quantity: item.quantity }))
     };
 
     const paymentMethod = this.orderForm.get('payment_method')?.value;
 
-    //  Nếu chọn Visa → thực hiện gọi API tạo clientSecret
-    if (paymentMethod === 'visa') {
-      const total = this.totalAmount - this.discountAmount;
-      const amountInCents = Math.round(total * 100); // chính xác đơn vị cent vì lúc gửi là usd trên tripe tính là cent
-
+    if (paymentMethod === 'credit') {
+      const amountInCents = Math.round((this.totalAmount - this.discountAmount) * 100);
       this.isProcessing = true;
-      this.paymentService.createPaymentIntent(amountInCents)
-        .subscribe(async res => {
-          debugger
-          this.clientSecret = res.clientSecret;
 
+      try {
+        const res = await this.paymentService.createPaymentIntent(amountInCents).toPromise();
+        this.clientSecret = res.clientSecret;
 
+        const numberDiv = document.getElementById('card-number');
+        if (!this.cardNumberElement || !this.cardExpiryElement || !this.cardCvcElement || !numberDiv || numberDiv.children.length === 0) {
+          alert('❌ Stripe Elements chưa mount đầy đủ!');
+          this.isProcessing = false; return;
+        }
 
-          //  Xác nhận thanh toán bằng Stripe
-          const result = await this.stripe?.confirmCardPayment(this.clientSecret, {
-            payment_method: {
-              card: this.card,
-              billing_details: {
-                name: this.orderForm.get('fullname')?.value
-              }
-            }
-          });
-          
-          // ✅ Nếu thanh toán thành công → gọi hàm đặt hàng
-          if (result?.paymentIntent?.status === 'succeeded') {
-              this.submitOrder();
-              
-          } else {
-            alert('Thanh toán thất bại: ' + result?.error?.message);
+        const paymentMethodResult = await this.stripe!.createPaymentMethod({
+          type: 'card',
+          card: this.cardNumberElement,
+          billing_details: {
+            name: this.orderForm.value.fullname,
+            email: this.orderForm.value.email
           }
-
-          this.isProcessing = false;
         });
+
+        if (paymentMethodResult.error) {
+          alert('❌ Tạo phương thức thanh toán thất bại: ' + paymentMethodResult.error.message);
+          this.isProcessing = false; return;
+        }
+
+        const result = await this.stripe!.confirmCardPayment(this.clientSecret, {
+          payment_method: paymentMethodResult.paymentMethod.id
+        });
+
+        if (result.error) {
+          alert('❌ Thanh toán thất bại: ' + result.error.message);
+          this.isProcessing = false; return;
+        }
+
+        if (result.paymentIntent?.status === 'succeeded') {
+          this.submitOrder();
+        } else {
+          alert('❌ Thanh toán không thành công. Vui lòng thử lại.');
+        }
+
+      } catch (error: any) {
+        alert('❌ Lỗi hệ thống: ' + (error?.message || 'Không rõ nguyên nhân'));
+      }
+
+      this.isProcessing = false;
     } else {
-      // Nếu là COD → gọi luôn hàm đặt hàng
       this.submitOrder();
     }
   }
+
+
+  fillOrderFormFromShippingAddress(): void {
+    debugger
+    const fullName = `${this.shippingAddress.lastName} ${this.shippingAddress.firstName}`.trim();
+    const fullAddress = `${this.shippingAddress.zipCode}${this.shippingAddress.prefecture}${this.shippingAddress.city}${this.shippingAddress.address_line1}${this.shippingAddress.address_line2}`.trim();
+
+    this.orderForm.patchValue({
+      fullname: fullName,
+      email: this.shippingAddress.email,
+      phone_number: this.shippingAddress.phone,
+      address: fullAddress,
+      zip_code: this.shippingAddress.zipCode,
+      prefecture: this.shippingAddress.prefecture,
+      city: this.shippingAddress.city,
+      address_line1: this.shippingAddress.address_line1,
+      address_line2: this.shippingAddress.address_line2,
+    });
+  }
+
 
   submitOrder() {
     this.orderService.placeOrder(this.orderData).subscribe({
@@ -312,39 +445,80 @@ export class OrderComponent implements OnInit {
   }
 
   async setupStripeCard(): Promise<void> {
+    console.log('🔥 setupStripeCard() được gọi');
+
+    this.stripeInitializing = true;
+
+    if (!this.stripe) {
+      this.stripe = await loadStripe("pk_test_51RSo4xPFbw4IcrssemjdpIYT7mqKMy7ya89Cq54XrZYoPjPXRxAN4njP03jpFPpcclEQd2uuE7ikMHiJjWkJXRIA00QxXAyTZn"); // dùng biến env
+    }
+
+    const numberEl = document.getElementById('card-number');
+    const expiryEl = document.getElementById('card-expiry');
+    const cvcEl = document.getElementById('card-cvc');
+
+    if (!numberEl || !expiryEl || !cvcEl) {
+      console.warn('❌ DOM thiếu element để mount');
+      return;
+    }
+
+    numberEl.innerHTML = '';
+    expiryEl.innerHTML = '';
+    cvcEl.innerHTML = '';
+
     try {
-      if (!this.stripe) {
-        this.stripe = await loadStripe('pk_test_51RSo4xPFbw4IcrssemjdpIYT7mqKMy7ya89Cq54XrZYoPjPXRxAN4njP03jpFPpcclEQd2uuE7ikMHiJjWkJXRIA00QxXAyTZn');
-      }
+      const elements = this.stripe!.elements();
 
-      if (!this.stripe) {
-        console.error('❌ Không thể load Stripe!');
-        return;
-      }
+      this.cardNumberElement = elements.create('cardNumber');
+      this.cardNumberElement.mount('#card-number');
+      console.log('✅ cardNumber mounted');
 
-      const cardElementDiv = document.getElementById('card-element');
-      if (!cardElementDiv) {
-        console.error('❌ Không tìm thấy thẻ #card-element trong DOM!');
-        return;
-      }
+      this.cardExpiryElement = elements.create('cardExpiry');
+      this.cardExpiryElement.mount('#card-expiry');
+      console.log('✅ cardExpiry mounted');
 
-      cardElementDiv.innerHTML = ''; // Dọn trước
-      const elements = this.stripe.elements();
-      this.card = elements.create('card');
-      this.card.mount('#card-element');
+      this.cardCvcElement = elements.create('cardCvc');
+      this.cardCvcElement.mount('#card-cvc');
+      console.log('✅ cardCvc mounted');
+
+      this.cardNumberElement.on('change', (event) => {
+        this.cardBrand = event.brand;
+        this.cardComplete = event.complete;
+        const errorDiv = document.getElementById('card-errors');
+        if (errorDiv) errorDiv.textContent = event.error?.message || '';
+      });
     } catch (error) {
-      console.error('❌ Lỗi khi khởi tạo Stripe card:', error);
+      console.error('❌ Mount lỗi:', error);
+    } finally {
+      this.stripeInitializing = false;
+    }
+  }
+
+
+  selectPaymentMethod(method: string) {
+    this.selectedPaymentMethod = method;
+    this.orderForm.patchValue({ payment_method: method });
+
+    if (method === 'credit') {
+      setTimeout(async () => {
+        console.log('👉 Đang chờ mount Stripe...');
+        await this.waitForStripeElementsToBeReady();
+        console.log('✅ Các div đã sẵn sàng, tiến hành mount');
+        await this.setupStripeCard();
+      }, 0);
     }
   }
 
 
 
 
+
+
   onPaymentMethodChange() {
     const method = this.orderForm.get('payment_method')?.value;
-    if (method === 'visa') {
+    if (method === 'credit') {
       // ⚠️ Chờ DOM hiển thị element
-      setTimeout(() => this.setupStripeCard(), 50);
+      setTimeout(() => this.setupStripeCard(), 300);
     }
   }
 
@@ -378,6 +552,150 @@ export class OrderComponent implements OnInit {
     });
   }
 
+  getSubtotal() {
+    return this.cartItems.reduce((total, item) => total + (item.product.price * item.quantity), 0);
+  }
+
+  getTotal(): number {
+    return this.getSubtotal(); // No shipping cost
+  }
+
+
+
+  getSelectedPaymentLabel(): string {
+    const type = this.orderForm.get('payment_method')?.value;
+    const method = this.paymentMethods.find(pm => pm.type === type);
+    return method ? `${method.icon} ${method.label}` : '未選択';
+  }
+
+  getTax(): number {
+    return Math.round((this.getSubtotal() - this.discountAmount) * 0.1); // 10% tax
+  }
+
+  getFinalTotal(): number {
+    return this.getSubtotal() + this.getTax() - this.discountAmount;
+  }
+
+  nextStep() {
+    if (this.currentStep === 2) {
+      this.fillOrderFormFromShippingAddress();
+
+    }
+
+    if (this.currentStep === 3) {
+      this.orderForm.patchValue({
+        payment_method: this.selectedPaymentMethod
+      });
+    }
+
+    if (!this.canProceed()) {
+      if (this.currentStep === 3 && this.selectedPaymentMethod === 'credit' && !this.cardComplete) {
+        alert('Vui lòng nhập đầy đủ thông tin thẻ trước khi tiếp tục.');
+      }
+      return;
+    }
+
+    if (this.currentStep === 3 && this.selectedPaymentMethod === 'credit') {
+      this.destroyStripeElements(); // 🔁 thêm hàm này
+    }
+
+    this.currentStep++;
+
+    if (this.canProceed() && this.currentStep < 3) {
+      this.currentStep++;
+
+      // 👇 Nếu vừa chuyển sang bước 4 → kích hoạt shake
+      if (this.currentStep === 3) {
+        this.shouldShakeCoupon = true;
+
+        // Tắt shake sau 500ms để tránh rung mãi
+        setTimeout(() => {
+          this.shouldShakeCoupon = false;
+        }, 500);
+      }
+    }
+    console.log("fromOrder: ", this.orderForm.value);
+  }
+
+  destroyStripeElements() {
+    try {
+      if (this.cardNumberElement) this.cardNumberElement.unmount();
+      if (this.cardExpiryElement) this.cardExpiryElement.unmount();
+      if (this.cardCvcElement) this.cardCvcElement.unmount();
+    } catch (err) {
+      console.warn('⚠️ destroyStripeElements failed', err);
+    }
+  }
+
+  previousStep() {
+    if (this.currentStep === 3 && this.selectedPaymentMethod === 'credit') {
+      console.log('🔙 Quay lại bước 3, chuẩn bị mount Stripe lại...');
+      setTimeout(async () => {
+        await this.waitForStripeElementsToBeReady();
+        await this.setupStripeCard();
+      }, 0);
+    }
+    if (this.currentStep > 1) {
+      this.currentStep--;
+    }
+  }
+
+  canProceed(): boolean {
+    switch (this.currentStep) {
+      case 1:
+        return this.cartItems.length > 0;
+      case 2:
+        return this.isShippingAddressValid();
+      case 3:
+
+        if (this.selectedPaymentMethod === 'credit') {
+          return this.cardComplete;
+        }
+        return !!this.selectedPaymentMethod;
+      default:
+        return true;
+    }
+  }
+
+  isShippingAddressValid(): boolean {
+    return !!(
+      this.shippingAddress.firstName &&
+      this.shippingAddress.lastName &&
+      this.shippingAddress.email &&
+      this.shippingAddress.phone &&
+      this.shippingAddress.zipCode &&
+      this.shippingAddress.prefecture &&
+      this.shippingAddress.city &&
+      this.shippingAddress.address_line1
+    );
+  }
+
+  private waitForStripeElementsToBeReady(timeout = 3000): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const start = Date.now();
+
+      const check = () => {
+        const number = document.getElementById('card-number');
+        const expiry = document.getElementById('card-expiry');
+        const cvc = document.getElementById('card-cvc');
+        if (number && expiry && cvc) {
+          console.log('✅ Stripe Elements container đã sẵn sàng');
+          resolve();
+        } else if (Date.now() - start > timeout) {
+          console.warn('❌ Stripe Elements không sẵn sàng sau timeout!');
+          reject(new Error('Timeout chờ DOM'));
+        } else {
+          setTimeout(check, 50);
+        }
+      };
+
+      check();
+    });
+  }
+
 }
+
+
+
 
 

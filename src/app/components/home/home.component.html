@@ -1,126 +1,175 @@
-<div class="custom-container">
-    <!-- Tìm kiếm -->
-    <div class="search-slideshow-wrapper">
-        <!-- Ảnh nền chạy tự động -->
-        <div class="slideshow">
-            <img *ngFor="let img of slideshowImages; let i = index" [src]="img" [class.active]="i === currentSlide"
-                class="slide-img" />
-        </div>
-
-        <!-- Nội dung thanh tìm kiếm -->
-        <div class="search-section">
-            <div class="d-flex justify-content-center">
-                <div class="row align-items-end w-100" style="max-width: 1000px; width: 100%;">
-                    <div class="col-md-10 mb-2">
-                        <input type="text" id="keyword" class="form-control"
-                            [placeholder]="'home.placeholder' | translate" [(ngModel)]="keyword">
-                    </div>
-                    <div class="col-md-2 mb-2">
-                        <label class="d-block">&nbsp;</label>
-                        <button class="btn btn-primary w-100" (click)="searchProducts()">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+<main class="home">
+  <!-- Hero Section -->
+  <section class="hero-slideshow">
+    <div class="slideshow">
+      <img *ngFor="let img of slideshowImages; let i = index" [src]="img" [class.active]="i === currentSlide"
+        class="slide-img" />
     </div>
 
-    <!-- Bộ lọc -->
-    <div class="filter-section mb-4">
-        <div class="row align-items-end">
-            <!-- Danh mục -->
-            <div class="col-md-3 mb-2">
-                <label for="category">{{ 'home.category' | translate }}</label>
-                <select id="category" class="form-control" [(ngModel)]="selectedCategoryId"
-                    (change)="onCategoryChange($event)">
-                    <option [value]="0">{{ 'home.all' | translate }}</option>
-                    <option *ngFor="let category of categories" [value]="category.id">{{ category.name }}</option>
-                </select>
-            </div>
-
-            <!-- Thương hiệu -->
-            <div class="col-md-3 mb-2">
-                <label for="brand">{{ 'home.brand' | translate }}</label>
-                <select id="brand" class="form-control" [(ngModel)]="selectedBrandId" (change)="onBrandChange($event)">
-                    <option [value]="0">{{ 'home.all' | translate }}</option>
-                    <option *ngFor="let brand of brands" [value]="brand.id">{{ brand.name }}</option>
-                </select>
-            </div>
-
-            <!-- Thanh kéo giá -->
-            <div class="col-md-3 mb-2">
-                <div class="price-slider" #slider>
-                    <label for="price">{{ 'home.price' | translate }}</label>
-                    <div class="slider-track"></div>
-                    <div class="slider-range" [ngStyle]="{ left: rangeLeft + '%', right: rangeRight + '%' }"></div>
-
-                    <!-- Thumb min -->
-                    <div class="thumb thumb-left" [ngStyle]="{ left: rangeLeft + '%' }"
-                        (mousedown)="startDrag('min', $event)" (touchstart)="startDrag('min', $event)"></div>
-
-                    <!-- Thumb max -->
-                    <div class="thumb thumb-right" [ngStyle]="{ left: (100 - rangeRight) + '%' }"
-                        (mousedown)="startDrag('max', $event)" (touchstart)="startDrag('max', $event)"></div>
-
-                    <div class="price-values">
-                        <span>${{ tempMin }}</span>
-                        <span>${{ tempMax }}</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Nút Bỏ lọc -->
-            <div class="col-md-3 mb-2">
-                <button class="btn btn-outline-secondary w-100" (click)="resetFilters()">
-                    {{ 'home.resetFilter' | translate }}
-                </button>
-            </div>
+    <div class="overlay-content">
+      <div class="blur-card">
+        <h1>{{ 'home.hero.title' | translate }}</h1>
+        <p class="hero-subtitle">{{ 'home.hero.subtitle' | translate }}</p>
+        <div class="hero-features">
+          <div class="feature"><span>🚚</span> {{ 'home.hero.feature_free_shipping' | translate }}</div>
+          <div class="feature"><span>🛡️</span> {{ 'home.hero.feature_warranty' | translate }}</div>
+          <div class="feature"><span>⚡</span> {{ 'home.hero.feature_fast_shipping' | translate }}</div>
         </div>
+        <button class="cta-btn" (click)="goToProducts()">{{ 'home.hero.cta' | translate }}</button>
+      </div>
     </div>
 
-    <!-- Danh sách sản phẩm -->
-    <div class="row">
-        <div class="col-6 col-sm-6 col-md-4 col-lg-3 mb-4" *ngFor="let product of products">
-            <div class="product-item" (click)="onProductClick(product.id)">
-                <img *ngIf="product.url" [src]="product.url + '?v=' + timestamp" alt="Product Image"
-                    class="product-image">
-                <div class="product-bottom">
-                    <h3 class="product-name">{{ product.name }}</h3>
+  </section>
 
-                    <p class="product-price">{{ 'home.priceLabel' | translate }} ${{ product.price }}</p>
-                    <button class="btn btn-add-to-cart w-100 mt-2"
-                        (click)="addToCart(product); $event.stopPropagation()">
-                        {{ 'home.addToCart' | translate }}
-                    </button>
-                </div>
-            </div>
+
+  <!-- Categories Section -->
+  <section class="categories" *ngIf="categories.length > 0">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">{{ 'home.categories.title' | translate }}</h2>
+        <p class="section-subtitle">{{ 'home.categories.subtitle' | translate }}</p>
+      </div>
+      <div class="categories-grid">
+        <div class="category-card" *ngFor="let category of categories" (click)="goToCategory(category)">
+          <div class="category-image">
+            <img [src]="categoryImages[category.id] || 'https://via.placeholder.com/300x200?text=No+Image'"
+              [alt]="category.name" style="width: 100%; height: 100%; object-fit: cover;" />
+
+          </div>
+          <div class="category-info">
+            <h3>{{ category.name }}</h3>
+            <p>{{ getCategoryCount(category.id) }} {{ 'home.categories.unit' | translate }}</p>
+            <span class="category-arrow">→</span>
+          </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Products -->
+  <section class="featured-products">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">{{ 'home.featured.title' | translate }}</h2>
+        <p class="section-subtitle">{{ 'home.featured.subtitle' | translate }}</p>
+      </div>
+      <div class="products-grid">
+
+        <div class="product-card" *ngFor="let product of products">
+          <div class="product-image">
+            <img [src]="product.thumbnail" [alt]="product.name">
+            <div class="product-badge" *ngIf="product.badge">{{ product.badge }}</div>
+            <div class="product-overlay">
+              <button class="quick-view-btn" (click)="onProductClick(product.id)">{{ 'home.featured.quick_view' |
+                translate }}</button>
+              <button class="wishlist-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path
+                    d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                  </path>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-brand">{{ getBrandName(product.brand_id) }}</div>
+            <h3>{{ product.name }}</h3>
+            <p class="product-description">{{ product.description }}</p>
+            <div class="product-rating">
+              <div class="stars">
+                <span *ngFor="let star of getStars(product.rating ?? 0)" class="star">★</span>
+                <span *ngFor="let star of getStars(5-(product.rating ?? 0))" class="star empty">☆</span>
+              </div>
+              <span class="rating-text">({{ product.reviews }}件)</span>
+            </div>
+            <div class="product-price">
+              <span class="current-price">¥{{ product.price | number }}</span>
+              <span class="old-price" *ngIf="product.oldPrice">¥{{ product.oldPrice | number }}</span>
+              <span class="discount" *ngIf="product.oldPrice">
+                {{ getDiscountPercentage(product.price, product.oldPrice) }}%OFF
+              </span>
+            </div>
+            <div class="product-actions">
+              <button class="add-to-cart-btn" (click)="addToCart(product)">{{ 'home.featured.add_to_cart' | translate
+                }}</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="d-flex justify-content-center">
-        <nav class="d-inline-block" aria-label="Page navigation">
-            <ul class="pagination">
-                <li class="page-item" *ngIf="currentPage > 0">
-                    <a class="page-link" (click)="onPageChange(1)">{{ 'home.first' | translate }}</a>
-                </li>
-                <li class="page-item" *ngIf="currentPage > 0">
-                    <a class="page-link prev-page" (click)="onPageChange(currentPage - 1)">{{ 'home.previous' |
-                        translate }}</a>
-                </li>
-                <ng-container *ngFor="let page of visiblePages ">
-                    <li class="page-item" [ngClass]="{'active': page === currentPage}">
-                        <a class="page-link" (click)="onPageChange(page)">{{ page }}</a>
-                    </li>
-                </ng-container>
-                <li class="page-item" *ngIf="currentPage < totalPages -1">
-                    <a class="page-link next-page" (click)="onPageChange(currentPage + 1)">{{ 'home.next' | translate
-                        }}</a>
-                </li>
-                <li class="page-item" *ngIf="currentPage < totalPages -1">
-                    <a class="page-link" (click)="onPageChange(totalPages)">{{ 'home.last' | translate }}</a>
-                </li>
-            </ul>
-        </nav>
+  </section>
+
+
+  <!-- Special Offer Banner -->
+  <section class="special-offer-v2">
+    <div class="container">
+      <div class="offer-banner">
+        <div class="offer-left">
+          <img src="https://cdn.tgdd.vn/Files/2020/11/09/1305554/sale_800x450_800x450.jpg" alt="セール商品"
+            class="offer-image">
+        </div>
+        <div class="offer-right">
+          <h2 class="offer-title">⚡ {{ 'home.offer.title' | translate }}</h2>
+          <p class="offer-description">{{ 'home.offer.description' | translate }}</p>
+          <div class="countdown-timer">
+
+
+            <div class="timer-unit">
+              <span class="time">{{ countdown?.days || '00' }}</span>
+              <span class="label">{{ 'home.offer.days' | translate }}</span>
+            </div>
+            <div class="timer-unit">
+              <span class="time">{{ countdown?.hours || '00' }}</span>
+              <span class="label">{{ 'home.offer.hours' | translate }}</span>
+            </div>
+            <div class="timer-unit">
+              <span class="time">{{ countdown?.minutes || '00' }}</span>
+              <span class="label">{{ 'home.offer.minutes' | translate }}</span>
+            </div>
+            <div class="timer-unit">
+              <span class="time">{{ countdown?.seconds || '00' }}</span>
+              <span class="label">{{ 'home.offer.seconds' | translate }}</span>
+            </div>
+          </div>
+
+          <button class="cta-button">{{ 'home.offer.cta' | translate }}</button>
+        </div>
+
+      </div>
     </div>
-</div>
+  </section>
+
+
+
+
+  <!-- Trust Indicators -->
+  <section class="trust-indicators">
+    <div class="container">
+      <div class="trust-grid">
+        <div class="trust-item">
+          <div class="trust-icon">🏆</div>
+          <h4>{{ 'home.trust.quality_title' | translate }}</h4>
+          <p>{{ 'home.trust.quality_desc' | translate }}</p>
+        </div>
+        <div class="trust-item">
+          <div class="trust-icon">🔒</div>
+          <h4>{{ 'home.trust.payment_title' | translate }}</h4>
+          <p>{{ 'home.trust.payment_desc' | translate }}</p>
+
+        </div>
+        <div class="trust-item">
+          <div class="trust-icon">📞</div>
+          <h4>{{ 'home.trust.support_title' | translate }}</h4>
+          <p>{{ 'home.trust.support_desc' | translate }}</p>
+
+        </div>
+        <div class="trust-item">
+          <div class="trust-icon">🚀</div>
+          <h4>{{ 'home.trust.delivery_title' | translate }}</h4>
+          <p>{{ 'home.trust.delivery_desc' | translate }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

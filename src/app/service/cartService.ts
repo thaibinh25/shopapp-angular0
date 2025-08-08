@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { BehaviorSubject } from "rxjs";
 
 @Injectable({
     providedIn: 'root'
@@ -6,13 +7,16 @@ import { Injectable } from "@angular/core";
   
   export class CartService {
     private cart: Map<number, number> = new Map(); // Dùng Map để lưu trữ giỏ hàng, key là id sản phẩm, value là số lượng
-  
+    private cartCountSubject = new BehaviorSubject<number>(0);
+    public cartCount$ = this.cartCountSubject.asObservable();
+    
     constructor() {
       // Lấy dữ liệu giỏ hàng từ localStorage khi khởi tạo service    
       const storedCart = localStorage.getItem('cart');
       if (storedCart) {
         this.cart = new Map(JSON.parse(storedCart));      
       }
+      this.updateCartCount(); // ✅ 
     }
   
     addToCart(productId: number, quantity: number = 1): void {
@@ -26,8 +30,13 @@ import { Injectable } from "@angular/core";
       }
        // Sau khi thay đổi giỏ hàng, lưu trữ nó vào localStorage
       this.saveCartToLocalStorage();
+      this.updateCartCount(); // ✅ Update count khi load ban đầu
     }
     
+    private updateCartCount(): void {
+      const totalCount = Array.from(this.cart.values()).reduce((sum, qty) => sum + qty, 0);
+      this.cartCountSubject.next(totalCount); // ✅ Thông báo cho subscriber
+    }
     getCart(): Map<number, number> {
       return this.cart;
     }
@@ -36,6 +45,7 @@ import { Injectable } from "@angular/core";
       if (this.cart.has(productId)) {
         this.cart.delete(productId); // Xóa sản phẩm khỏi giỏ hàng
         this.saveCartToLocalStorage(); // Lưu lại giỏ hàng vào localStorage
+        this.updateCartCount(); // ✅
       }
     }
     updateQuantity(productId: number, quantity: number): void {
@@ -46,6 +56,7 @@ import { Injectable } from "@angular/core";
         cart.set(productId, quantity);
       }
       localStorage.setItem('cart', JSON.stringify(Array.from(cart.entries())));
+      this.updateCartCount(); // ✅
     }
 
     // Lưu trữ giỏ hàng vào localStorage
@@ -57,6 +68,7 @@ import { Injectable } from "@angular/core";
     clearCart(): void {
       this.cart.clear(); // Xóa toàn bộ dữ liệu trong giỏ hàng
       this.saveCartToLocalStorage(); // Lưu giỏ hàng mới vào Local Storage (trống)
+      this.updateCartCount(); // ✅
     }
   }
   

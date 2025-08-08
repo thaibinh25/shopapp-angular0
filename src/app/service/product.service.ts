@@ -4,6 +4,7 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { Product } from "../models/product";
 import { ProductResponse } from "../responses/product/product.response";
+import { ProductListResponse } from "../responses/product/product.list.response";
 
 
 @Injectable({
@@ -19,20 +20,51 @@ export class ProductService {
 
     getProducts(
       keyword: string, 
-      categoryId: number, 
-      brandId: number, 
+      categoryIds: number[],
+      brandIds: number[],
       minPrice: number | null, 
       maxPrice: number | null,
-      page: number, limit: number): Observable<Product[]> {
-        const params = new HttpParams()
-            .set('keyword',keyword)
-            .set('category_id',categoryId)
-            .set('brand_id', brandId || 0)
-            .set('minPrice', minPrice?.toString() || '')
-            .set('maxPrice', maxPrice?.toString() || '')
-            .set('page', page.toString())
-            .set('limit', limit.toString())
-        return this.http.get<Product[]>(this.apiUrl, { params });
+      minRating: number | null,         
+      badge: string | null,  
+      sortBy: string,
+      page: number, 
+      limit: number
+    ): Observable<ProductListResponse> {
+      let params = new HttpParams()
+        .set('keyword', keyword)
+        .set('page', page.toString())
+        .set('limit', limit.toString())
+        .set('sort', sortBy);
+    
+      categoryIds.forEach(id => {
+        params = params.append('category_id', id.toString());
+      });
+    
+      brandIds.forEach(id => {
+        params = params.append('brand_id', id.toString());
+      });
+    
+      if (minPrice !== null && minPrice !== undefined) {
+        params = params.set('minPrice', minPrice.toString());
+      }
+    
+      if (maxPrice !== null && maxPrice !== undefined) {
+        params = params.set('maxPrice', maxPrice.toString());
+      }
+    
+      if (minRating !== null && minRating !== undefined) {
+        params = params.set('minRating', minRating.toString());
+      }
+    
+      if (badge) {
+        params = params.set('badge', badge);
+      }
+    
+      return this.http.get<ProductListResponse>(this.apiUrl, { params });
+    }
+    
+    getAvailableBadges(): Observable<string[]> {
+      return this.http.get<string[]>(`${this.apiUrl}/badges`);
     }
 
     getDetailProduct(productId: number): Observable<ProductResponse>  {
@@ -44,6 +76,11 @@ export class ProductService {
       const params = new HttpParams().set('ids', productIds.join(',')); 
       return this.http.get<Product[]>(`${this.apiUrl}/by-ids`, { params });
     }
+
+    getAllProductsWithoutPagination(): Observable<ProductResponse[]> {
+      return this.http.get<ProductResponse[]>(`${this.apiUrl}/all`);
+    }
+    
 
     createProduct(product: any): Observable<any> {
       return this.http.post(this.apiUrl, product);

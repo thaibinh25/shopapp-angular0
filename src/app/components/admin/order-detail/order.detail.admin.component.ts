@@ -24,6 +24,11 @@ export class OrderDetailAdminComponent implements OnInit{
     phone_number: '',
     email: '',
     address: '',
+    zip_code: '',
+    prefecture: '',
+    city: '',
+    address_line1: '',
+    address_line2: '',
     note: '',
     order_date: new Date(),
     status: '',
@@ -57,6 +62,11 @@ export class OrderDetailAdminComponent implements OnInit{
         this.orderResponse.email = response.email;
         this.orderResponse.phone_number = response.phone_number;
         this.orderResponse.address = response.address; 
+        this.orderResponse.zip_code =response.zip_code ?? '',
+        this.orderResponse.prefecture= response.prefecture ?? '',
+        this.orderResponse.city= response.city ?? '',
+        this.orderResponse.address_line1= response.address_line1 ?? '',
+        this.orderResponse.address_line2= response.address_line2 ?? '',
         this.orderResponse.note = response.note;
         this.orderResponse.total_money = response.total_money;
         if (response.order_date) {
@@ -69,7 +79,7 @@ export class OrderDetailAdminComponent implements OnInit{
         this.orderResponse.order_details = response.order_details
           .map((order_detail:any) => {
             debugger
-          order_detail.product.thumbnail = `${environment.apiBaseUrl}/products/images/${order_detail.product.thumbnail}`;
+          order_detail.product.thumbnail = order_detail.product.thumbnail;
           order_detail.number_of_products = order_detail.number_of_products
           //order_detail.total_money = order_detail.totalMoney
           return order_detail;

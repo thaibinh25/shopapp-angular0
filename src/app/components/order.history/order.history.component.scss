@@ -1,0 +1,370 @@
+.order-history {
+    padding: 2rem 0;
+    background: #f7fafc;
+    min-height: 100vh;
+  
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+  
+    .page-header {
+      text-align: center;
+      margin-bottom: 2rem;
+  
+      h1 {
+        font-size: 2rem;
+        font-weight: 600;
+        color: #1a202c;
+        margin-bottom: 0.5rem;
+        font-family: 'Noto Sans JP', sans-serif;
+      }
+  
+      .page-subtitle {
+        color: #718096;
+        font-size: 1rem;
+      }
+    }
+  
+    .order-filters {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+  
+      .filter-tab {
+        background: white;
+        border: 1px solid #e2e8f0;
+        color: #4a5568;
+        padding: 0.8rem 1.5rem;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-family: 'Noto Sans JP', sans-serif;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+  
+        .count {
+          background: #edf2f7;
+          color: #718096;
+          padding: 0.2rem 0.5rem;
+          border-radius: 12px;
+          font-size: 0.8rem;
+        }
+  
+        &:hover {
+          background: #f7fafc;
+          border-color: #cbd5e0;
+        }
+  
+        &.active {
+          background: #2d3748;
+          color: white;
+          border-color: #2d3748;
+  
+          .count {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+          }
+        }
+      }
+    }
+  
+    .orders-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+  
+    .order-card {
+      background: white;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      transition: all 0.2s ease;
+  
+      &:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border-color: #cbd5e0;
+      }
+  
+      .order-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 1.5rem;
+        border-bottom: 1px solid #f1f5f9;
+  
+        .order-info {
+          h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 0.5rem;
+            font-family: 'Noto Sans JP', sans-serif;
+          }
+  
+          .order-meta {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+  
+            .order-date {
+              color: #718096;
+              font-size: 0.9rem;
+            }
+  
+            .order-status {
+              padding: 0.3rem 0.8rem;
+              border-radius: 16px;
+              font-size: 0.8rem;
+              font-weight: 500;
+  
+              &.status-pending {
+                background: #fef5e7;
+                color: #d69e2e;
+              }
+  
+              &.status-processing {
+                background: #e6fffa;
+                color: #319795;
+              }
+  
+              &.status-shipped {
+                background: #ebf8ff;
+                color: #3182ce;
+              }
+  
+              &.status-delivered {
+                background: #f0fff4;
+                color: #38a169;
+              }
+  
+              &.status-cancelled {
+                background: #fed7d7;
+                color: #e53e3e;
+              }
+            }
+          }
+        }
+  
+        .order-total {
+          text-align: right;
+  
+          .total-label {
+            display: block;
+            color: #718096;
+            font-size: 0.8rem;
+            margin-bottom: 0.3rem;
+          }
+  
+          .total-amount {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #2d3748;
+          }
+        }
+      }
+  
+      .order-items {
+        padding: 1.5rem;
+  
+        .order-item {
+          display: flex;
+          gap: 1rem;
+          margin-bottom: 1rem;
+  
+          &:last-child {
+            margin-bottom: 0;
+          }
+  
+          .item-image {
+            img {
+              width: 60px;
+              height: 60px;
+              object-fit: cover;
+              border-radius: 6px;
+            }
+          }
+  
+          .item-details {
+            flex: 1;
+  
+            .item-brand {
+              color: #718096;
+              font-size: 0.8rem;
+              font-weight: 500;
+              text-transform: uppercase;
+              margin-bottom: 0.3rem;
+            }
+  
+            h4 {
+              font-size: 1rem;
+              font-weight: 600;
+              color: #1a202c;
+              margin-bottom: 0.3rem;
+              font-family: 'Noto Sans JP', sans-serif;
+            }
+  
+            .item-options {
+              display: flex;
+              gap: 1rem;
+              font-size: 0.8rem;
+              color: #718096;
+              margin-bottom: 0.3rem;
+            }
+  
+            .item-price {
+              font-size: 0.9rem;
+              color: #4a5568;
+              font-weight: 500;
+            }
+          }
+        }
+      }
+  
+      .order-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem;
+        background: #f7fafc;
+        border-top: 1px solid #f1f5f9;
+  
+        .shipping-info {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+  
+          .tracking,
+          .delivery {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: #4a5568;
+  
+            svg {
+              color: #718096;
+            }
+          }
+        }
+  
+        .action-buttons {
+          display: flex;
+          gap: 0.8rem;
+          flex-wrap: wrap;
+  
+          .action-btn {
+            padding: 0.6rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            font-family: 'Noto Sans JP', sans-serif;
+  
+            &.primary {
+              background: #2d3748;
+              color: white;
+  
+              &:hover {
+                background: #1a202c;
+              }
+            }
+  
+            &.secondary {
+              background: white;
+              color: #4a5568;
+              border: 1px solid #e2e8f0;
+  
+              &:hover {
+                background: #f7fafc;
+                border-color: #cbd5e0;
+              }
+            }
+          }
+        }
+      }
+    }
+  
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  
+      .empty-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+      }
+  
+      h3 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #4a5568;
+        margin-bottom: 0.5rem;
+        font-family: 'Noto Sans JP', sans-serif;
+      }
+  
+      p {
+        color: #718096;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+      }
+  
+      .shop-now-btn {
+        background: #2d3748;
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 6px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-family: 'Noto Sans JP', sans-serif;
+  
+        &:hover {
+          background: #1a202c;
+          transform: translateY(-1px);
+        }
+      }
+    }
+  
+    @media (max-width: 768px) {
+      .order-filters {
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+  
+        .filter-tab {
+          flex-shrink: 0;
+          padding: 0.6rem 1rem;
+        }
+      }
+  
+      .order-card {
+        .order-header {
+          flex-direction: column;
+          gap: 1rem;
+          align-items: flex-start;
+        }
+  
+        .order-actions {
+          flex-direction: column;
+          gap: 1rem;
+          align-items: flex-start;
+  
+          .action-buttons {
+            width: 100%;
+            justify-content: flex-start;
+          }
+        }
+      }
+    }
+  }

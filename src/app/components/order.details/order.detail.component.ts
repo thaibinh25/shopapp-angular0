@@ -26,6 +26,11 @@ export class OrderDetailComponent implements OnInit {
     phone_number: '',
     email: '',
     address: '',
+    zip_code: '',
+    prefecture: '',
+    city: '',
+    address_line1: '',
+    address_line2: '',
     note: '',
     order_date: new Date(),
     status: '',
@@ -37,9 +42,11 @@ export class OrderDetailComponent implements OnInit {
     order_details: [], // Một mảng rỗng
     
   };
+
   constructor(private orderService: OrderService, private activatedRoute: ActivatedRoute,private translate: TranslateService) { }
 
   ngOnInit(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     this.getOrderDetails();
     console.log('Ngôn ngữ hiện tại:', this.translate.currentLang);
   }
@@ -77,6 +84,58 @@ export class OrderDetailComponent implements OnInit {
         console.error('Error fetching detail:', error);
       }
     });
+  }
+
+
+  getStatusLabel(status: string): string {
+    const statusLabels: { [key: string]: string } = {
+      'pending': '注文確認中',
+      'confirmed': '注文確定',
+      'processing': '処理中',
+      'shipped': '配送中',
+      'delivered': '配送完了',
+      'cancelled': 'キャンセル'
+    };
+    return statusLabels[status] || status;
+  }
+
+  printOrder() {
+    window.print();
+  }
+
+  downloadInvoice() {
+    console.log('Download invoice for order:', this.orderResponse.id);
+    // Implement invoice download
+  }
+
+  contactSupport() {
+    console.log('Contact support for order:', this.orderResponse.id);
+    // Navigate to support page with order context
+  }
+
+  reportProblem() {
+    console.log('Report problem for order:', this.orderResponse.id);
+    // Navigate to problem report form
+  }
+
+  cancelOrder() {
+    if (confirm('本当に注文をキャンセルしますか？')) {
+      console.log('Cancel order:', this.orderResponse.id);
+      // Implement order cancellation
+    }
+  }
+
+  canCancel(): boolean {
+    return ['pending', 'confirmed'].includes(this.orderResponse.status);
+  }
+  reorderItem(itemId: number) {
+    console.log('Reorder item:', itemId);
+    // Add item to cart
+  }
+
+  reviewItem(itemId: number) {
+    console.log('Review item:', itemId);
+    // Navigate to review page
   }
 
 }

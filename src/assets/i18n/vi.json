@@ -1,120 +1,238 @@
 {
-    "home": {
-        "placeholder": "Nhập từ khóa...",
-        "category": "Danh mục",
-        "brand": "Thương hiệu",
-        "price": "Giá",
-        "resetFilter": "Bỏ lọc",
-        "priceLabel": "Giá",
-        "all": "Tất cả",
-        "first": "Trang đầu",
-        "previous": "Trước",
-        "next": "Tiếp",
-        "last": "Trang cuối",
-        "addToCart": "Thêm vào giỏ hàng"
+  "home": {
+    "hero": {
+      "title": "Công nghệ tương lai, trong tay bạn hôm nay",
+      "subtitle": "Nâng cấp cuộc sống mỗi ngày bằng thiết bị hiện đại",
+      "feature_free_shipping": "Miễn phí vận chuyển toàn quốc",
+      "feature_warranty": "Bảo hành 1 năm",
+      "feature_fast_shipping": "Giao hàng trong ngày",
+      "cta": "Mua ngay"
     },
-    "header": {
-        "freeship": "Freeship toàn quốc cho đơn từ 500K hoặc nội thành Hà Nội",
-        "freeshipMobile": "Freeship toàn quốc cho đơn 500K+",
-        "cart": "Giỏ hàng",
-        "account": "Tài khoản của tôi",
-        "orders": "Đơn mua",
-        "history": "Lịch sử mua hàng",
-        "logout": "Đăng xuất",
-        "login": "Đăng nhập",
-        "markAsRead": "Đánh dấu đã đọc"
+    "categories": {
+      "title": "Danh mục sản phẩm",
+      "subtitle": "Đầy đủ các dòng sản phẩm phục vụ nhu cầu của bạn",
+      "unit": "sản phẩm"
     },
-    "product": {
-        "price": "Giá",
-        "addToCart": "Thêm vào giỏ hàng",
-        "buyNow": "Mua ngay"
+    "featured": {
+      "title": "Sản phẩm nổi bật",
+      "subtitle": "Chọn lọc sản phẩm chất lượng cao",
+      "quick_view": "Xem chi tiết",
+      "add_to_cart": "Thêm vào giỏ",
+      "reviews": " đánh giá"
     },
-    "profile": {
-        "infoTab": "Thông tin cá nhân",
-        "contactTab": "Liên hệ",
-        "passwordTab": "Đổi mật khẩu",
-        "fullname": "Họ tên",
-        "dob": "Ngày sinh",
-        "address": "Địa chỉ",
-        "phone": "Số điện thoại",
-        "edit": "Chỉnh sửa",
-        "saveChanges": "Lưu thay đổi",
-        "addressRequired": "Địa chỉ không được để trống.",
-        "phoneInvalid": "SĐT phải đúng định dạng 10–11 số và bắt đầu bằng 0.",
-        "passwordChange": "Đổi mật khẩu",
-        "currentPassword": "Mật khẩu hiện tại",
-        "currentPasswordRequired": "Bắt buộc nhập mật khẩu hiện tại.",
-        "newPassword": "Mật khẩu mới",
-        "newPasswordTooShort": "Mật khẩu mới phải có ít nhất 6 ký tự.",
-        "confirmPassword": "Nhập lại mật khẩu mới",
-        "passwordMismatch": "Mật khẩu nhập lại không khớp.",
-        "passwordMatch": "Mật khẩu nhập lại khớp",
-        "updatePassword": "Cập nhật mật khẩu"
+    "offer": {
+      "title": "Big Sale mùa hè đang diễn ra!",
+      "description": "Thiết bị công nghệ cao cấp giảm đến 50%! Mua ngay!",
+      "days": "Ngày",
+      "hours": "Giờ",
+      "minutes": "Phút",
+      "seconds": "Giây",
+      "cta": "Mua ngay"
     },
-    "orderDetail": {
-        "title": "Chi tiết đơn hàng",
-        "successMessage": "Đơn hàng của bạn đã được đặt thành công.",
-        "recipientInfo": "Thông tin người nhận",
-        "fullname": "Họ và tên",
-        "email": "Email",
-        "phone": "Số điện thoại",
-        "address": "Địa chỉ",
-        "note": "Ghi chú",
-        "shippingMethod": "Phương thức vận chuyển",
-        "paymentMethod": "Phương thức thanh toán",
-        "orderDate": "Ngày đặt hàng",
-        "shippingDate": "Ngày giao hàng dự kiến",
-        "orderedProducts": "Sản phẩm đã đặt hàng",
-        "product": "Sản phẩm",
-        "quantity": "Số lượng",
-        "unitPrice": "Đơn giá",
-        "totalPrice": "Tổng giá",
-        "totalMoney": "Tổng giá"
-    },
-    "orderHistory": {
-        "title": "Lịch sử đơn hàng",
-        "noOrders": "Bạn chưa có đơn hàng nào.",
-        "id": "ID",
-        "orderDate": "Ngày đặt",
-        "status": "Trạng thái",
-        "total": "Tổng tiền",
-        "view": "Xem chi tiết",
-        "viewBtn": "Xem"
-    },
-    "order": {
-        "title": "Đây là trang Order",
-        "recipientInfo": "Thông tin người nhận",
-        "fullname": "Họ và tên",
-        "fullnameRequired": "Họ và tên là trường bắt buộc.",
-        "email": "Email",
-        "emailRequired": "Email là trường bắt buộc.",
-        "emailInvalid": "Email không hợp lệ.",
-        "phone": "Số điện thoại",
-        "phoneRequired": "Số điện thoại là trường bắt buộc và ít nhất 6 ký tự.",
-        "address": "Địa chỉ",
-        "addressRequired": "Địa chỉ là trường bắt buộc và ít nhất 5 ký tự.",
-        "note": "Ghi chú",
-        "shippingMethod": "Phương thức vận chuyển",
-        "shippingExpress": "Nhanh (Express)",
-        "shippingNormal": "Thường (Normal)",
-        "paymentMethod": "Phương thức thanh toán",
-        "paymentCod": "Thanh toán khi nhận hàng (COD)",
-        "paymentVisa": "Thanh toán qua thẻ Visa",
-        "visaInfo": "Thông tin thẻ Visa",
-        "orderedProducts": "Sản phẩm đã đặt hàng",
-        "product": "Sản phẩm",
-        "quantity": "Số lượng",
-        "unitPrice": "Đơn giá",
-        "totalPrice": "Tổng giá",
-        "action": "Hành động",
-        "delete": "Xóa",
-        "totalAmount": "Tổng giá",
-        "discount": "Giảm giá",
-        "finalAmount": "Thành tiền",
-        "couponTitle": "Nhập coupon",
-        "couponPlaceholder": "Nhập coupon",
-        "processing": "Đang xử lý...",
-        "placeOrder": "Đặt hàng",
-        "emptyCart": "🛒 Giỏ hàng trống"
+    "trust": {
+      "quality_title": "Đảm bảo chất lượng",
+      "quality_desc": "Chỉ cung cấp sản phẩm qua kiểm định nghiêm ngặt",
+      "payment_title": "Thanh toán an toàn",
+      "payment_desc": "Bảo mật thông tin bằng mã hóa SSL",
+      "support_title": "Hỗ trợ 24/7",
+      "support_desc": "Đội ngũ tư vấn luôn sẵn sàng phục vụ",
+      "delivery_title": "Giao hàng nhanh chóng",
+      "delivery_desc": "Giao ngay từ ngày đặt hàng"
     }
+  },
+  "header": {
+    "nav": {
+      "home": "Trang chủ",
+      "products": "Sản phẩm",
+      "categories": "Danh mục",
+      "support": "Hỗ trợ",
+      "contact": "Liên hệ"
+    },
+    "search_placeholder": "Tìm kiếm sản phẩm...",
+    "login": "Đăng nhập",
+    "logout": "Đăng xuất",
+    "account": "Tài khoản của tôi",
+    "history": "Lịch sử đơn hàng",
+    "markAsRead": "Đánh dấu đã đọc"
+  },
+  "product": {
+    "price": "Giá",
+    "addToCart": "Thêm vào giỏ hàng",
+    "buyNow": "Mua ngay"
+  },
+  "profile": {
+  "changeAvatar": "Đổi ảnh đại diện",
+  "personalInfo": "Thông tin cá nhân",
+  "addressInfo": "Thông tin địa chỉ",
+  "paymentMethods": "Phương thức thanh toán",
+  "securitySettings": "Cài đặt bảo mật",
+  "edit": "Chỉnh sửa",
+  "save": "Lưu",
+  "fullname": "Họ và tên",
+  "email": "Email",
+  "phone": "Số điện thoại",
+  "birthDate": "Ngày sinh",
+  "zipCode": "Mã bưu điện",
+  "prefecture": "Tỉnh/Thành phố",
+  "city": "Quận/Huyện/Thành phố",
+  "address1": "Địa chỉ (số nhà, đường)",
+  "address2": "Tòa nhà, số phòng (tùy chọn)",
+  "selectPrefecture": "Chọn tỉnh/thành phố",
+  "addNewPayment": "Thêm phương thức thanh toán mới",
+  "default": "Mặc định",
+  "editPayment": "Chỉnh sửa",
+  "setDefault": "Đặt làm mặc định",
+  "delete": "Xóa",
+  "changePassword": "Thay đổi mật khẩu",
+  "recommendChange": "Khuyến nghị thay đổi mật khẩu định kỳ",
+  "currentPassword": "Mật khẩu hiện tại",
+  "newPassword": "Mật khẩu mới",
+  "confirmPassword": "Xác nhận mật khẩu mới",
+  "passwordMismatch": "Mật khẩu xác nhận không khớp",
+  "passwordMatch": "Mật khẩu xác nhận khớp",
+  "savePassword": "Lưu mật khẩu",
+  "changePasswordDesc": "Chúng tôi khuyến khích bạn nên thay đổi mật khẩu định kỳ để đảm bảo an toàn.",
+  "enterCurrentPassword": "Nhập mật khẩu hiện tại",
+  "enterNewPassword": "Nhập mật khẩu mới",
+  "confirmNewPassword": "Xác nhận mật khẩu mới"
+}
+,
+  "orderDetail": {
+    "breadcrumb": {
+      "home": "Trang chủ",
+      "history": "Lịch sử đơn hàng",
+      "detail": "Chi tiết đơn hàng"
+    },
+    "title": "Chi tiết đơn hàng",
+    "orderId": "Mã đơn hàng",
+    "orderDate": "Ngày đặt",
+    "print": "In đơn hàng",
+    "downloadInvoice": "Tải hóa đơn",
+    "itemsTitle": "Sản phẩm đặt mua",
+    "productCode": "Mã sản phẩm",
+    "color": "Màu sắc",
+    "quantity": "Số lượng",
+    "unitPrice": "Đơn giá",
+    "subtotal": "Tạm tính",
+    "reorder": "Đặt lại",
+    "writeReview": "Viết đánh giá",
+    "shippingAddress": "Địa chỉ giao hàng",
+    "billingAddress": "Địa chỉ thanh toán",
+    "phone": "Điện thoại",
+    "paymentInfo": "Thông tin thanh toán",
+    "paymentMethod": "Phương thức thanh toán",
+    "totalTitle": "Tổng tiền",
+    "totalAmount": "Tổng cộng",
+    "noteTitle": "Ghi chú",
+    "needHelp": "Bạn cần hỗ trợ?",
+    "contactSupport": "Liên hệ hỗ trợ",
+    "reportProblem": "Báo lỗi đơn hàng",
+    "cancelOrder": "Hủy đơn hàng"
+  },
+  "orderHistory": {
+    "title": "Lịch sử đơn hàng",
+    "subtitle": "Xem lại các đơn hàng trước đây của bạn",
+    "orderNumber": "Mã đơn hàng",
+    "total": "Tổng cộng",
+    "unit": "sp",
+    "viewDetail": "Xem chi tiết",
+    "reorder": "Đặt lại",
+    "writeReview": "Viết đánh giá",
+    "emptyTitle": "Chưa có đơn hàng nào",
+    "emptyMessage": "Bạn chưa đặt đơn hàng nào. Hãy khám phá sản phẩm yêu thích.",
+    "shopNow": "Bắt đầu mua sắm",
+    "filter": {
+      "all": "Tất cả",
+      "pending": "Đang xử lý",
+      "shipped": "Đang giao",
+      "delivered": "Đã giao",
+      "cancelled": "Đã huỷ"
+    }
+  },
+  "order": {
+    "step": {
+      "cartReview": "Xem giỏ hàng",
+      "shippingInfo": "Thông tin giao hàng",
+      "paymentConfirmation": "Thanh toán & Xác nhận"
+    },
+    "review": {
+      "title": "Xác nhận nội dung giỏ hàng"
+    },
+    "shipping": {
+      "title": "Thông tin người nhận",
+      "lastName": "Họ *",
+      "firstName": "Tên *",
+      "email": "Email *",
+      "phone": "Số điện thoại *",
+      "zipCode": "Mã bưu điện *",
+      "prefecture": "Tỉnh/Thành phố *",
+      "prefecturePlaceholder": "Vui lòng chọn",
+      "city": "Quận/Huyện *",
+      "address1": "Địa chỉ *",
+      "address2": "Tên tòa nhà/Số phòng"
+    },
+    "payment": {
+      "title": "Phương thức thanh toán",
+      "cardInfo": "Thông tin thẻ tín dụng",
+      "cardNumber": "Số thẻ",
+      "expiration": "Ngày hết hạn",
+      "cvc": "Mã CVC",
+      "detectedCard": "🧾 Loại thẻ phát hiện:",
+      "method": {
+        "credit": "Thẻ tín dụng",
+        "bank": "Chuyển khoản ngân hàng",
+        "daibiki": "Thanh toán khi nhận"
+      }
+    },
+    "confirmation": {
+      "title": "Xác nhận đơn hàng",
+      "items": "Sản phẩm đặt mua",
+      "quantity": "Số lượng",
+      "addressTitle": "Địa chỉ giao hàng"
+    },
+    "total": {
+      "subtotal": "Tạm tính",
+      "shipping": "Phí vận chuyển",
+      "tax": "Thuế",
+      "coupon": "Giảm giá",
+      "total": "Tổng cộng"
+    },
+    "sidebar": {
+      "summary": "Tóm tắt đơn hàng"
+    },
+    "coupon": {
+      "title": "Mã giảm giá",
+      "placeholder": "Nhập mã giảm giá...",
+      "success": "✅ Mã giảm giá đã được áp dụng"
+    },
+    "nav": {
+      "back": "Quay lại",
+      "next": "Tiếp theo",
+      "placeOrder": "Xác nhận đặt hàng"
+    }
+  },
+  "footer": {
+    "company_title": "TTB store",
+    "company_desc": "Chuỗi cửa hàng điện tử lớn nhất Nhật Bản. Chúng tôi cam kết mang đến sản phẩm tốt nhất với công nghệ hiện đại và chất lượng truyền thống.",
+    "quick_links": "Liên kết nhanh",
+    "link_home": "Trang chủ",
+    "link_products": "Danh sách sản phẩm",
+    "link_categories": "Danh mục",
+    "link_offers": "Ưu đãi đặc biệt",
+    "link_new": "Hàng mới về",
+    "link_brands": "Thương hiệu",
+    "customer_service": "Dịch vụ khách hàng",
+    "contact": "Liên hệ",
+    "shipping": "Vận chuyển",
+    "returns": "Đổi trả",
+    "warranty": "Bảo hành",
+    "faq": "Câu hỏi thường gặp",
+    "tech_support": "Hỗ trợ kỹ thuật",
+    "rights": "Đã đăng ký bản quyền.",
+    "privacy": "Chính sách bảo mật",
+    "terms": "Điều khoản sử dụng",
+    "law": "Luật thương mại",
+    "language": "Ngôn ngữ",
+    "payment_method": "Phương thức thanh toán:"
+  }
 }

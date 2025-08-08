@@ -24,6 +24,11 @@ export class DetailProductComponent implements OnInit {
   productId: number = 0;
   currentImageIndex: number = 0;
   quantity: number = 1;
+
+  selectedImage: string = '';
+  activeTab: string = 'description';
+
+
   constructor(
     private productService: ProductService,
     private cartService: CartService,
@@ -33,11 +38,8 @@ export class DetailProductComponent implements OnInit {
   ){}
 
   ngOnInit() {
-    setInterval(() => {
-      if (this.product?.product_images && this.product.product_images.length > 0) {
-        this.currentImageIndex = (this.currentImageIndex + 1) % this.product.product_images.length;
-      }
-    }, 4000);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
     // Lấy productId từ URL      
     const idParam = this.activatedRoute.snapshot.paramMap.get('id');
     //const idParam = 18;
@@ -61,6 +63,15 @@ export class DetailProductComponent implements OnInit {
           this.product = response 
           // Bắt đầu với ảnh đầu tiên
           this.showImage(0);
+          setTimeout(() => {
+            setInterval(() => {
+              if (this.product?.product_images?.length) {
+                this.currentImageIndex = (this.currentImageIndex + 1) % this.product.product_images.length;
+                this.selectedImage = this.product.product_images[this.currentImageIndex].image_url;
+              }
+            }, 4000);
+          }, 0);
+        
         },
         complete: () => {
           
@@ -87,6 +98,8 @@ export class DetailProductComponent implements OnInit {
       }        
       // Gán index hiện tại và cập nhật ảnh hiển thị
       this.currentImageIndex = index;
+
+      this.selectedImage = this.product.product_images[this.currentImageIndex].image_url;
     }
   }
   thumbnailClick(index: number) {
@@ -101,18 +114,22 @@ export class DetailProductComponent implements OnInit {
       } else {
         this.currentImageIndex++;
       }
+      this.selectedImage = this.product.product_images[this.currentImageIndex].image_url;
     }
-    
   }
+  
 
   previousImage(): void {
-    if (this.product?.product_images?.length){
-    if (this.currentImageIndex === 0) {
-      this.currentImageIndex = this.product.product_images.length - 1;
-    } else {
-      this.currentImageIndex--;
-    }}
-  }      
+    if (this.product?.product_images?.length) {
+      if (this.currentImageIndex === 0) {
+        this.currentImageIndex = this.product.product_images.length - 1;
+      } else {
+        this.currentImageIndex--;
+      }
+      this.selectedImage = this.product.product_images[this.currentImageIndex].image_url;
+    }
+  }
+  
   addToCart(): void {
     
     if (this.product) {
@@ -136,8 +153,6 @@ export class DetailProductComponent implements OnInit {
   }
 
   
-  
-  
   buyNow(): void {      
     if (this.product) {
       this.cartService.addToCart(this.product.id, this.quantity);
@@ -147,7 +162,16 @@ export class DetailProductComponent implements OnInit {
     }
   }    
 
+  setActiveTab(tab: string) {
+    this.activeTab = tab;
+  }
 
+  selectImage(imageUrl: string): void {
+    this.selectedImage = imageUrl;
+  }
   
+  getStars(rating: number): number[] {
+    return Array(Math.round(rating)).fill(0);
+  }
 }
 

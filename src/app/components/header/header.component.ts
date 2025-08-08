@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, ElementRef, HostListener, OnInit, ViewChi
 import { NavigationEnd, Router, ActivatedRoute, NavigationStart } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { filter, Subscription } from 'rxjs';
+import { debounceTime, filter, Subject, Subscription } from 'rxjs';
 import { RouterModule } from '@angular/router';
 import { NgbPopover, NgbPopoverModule, NgbPopoverConfig } from '@ng-bootstrap/ng-bootstrap';
 import { UserResponse } from '../../responses/user/user.response';
@@ -12,6 +12,7 @@ import { NotificationService } from '../../service/notification.service';
 import { UserNotification } from '../../models/notification';
 import { NotificationSocketService } from '../../service/notification.socket.service';
 import { TranslateModule } from '@ngx-translate/core';
+import { CartService } from '../../service/cartService';
 
 declare const google: any;
 declare global {
@@ -40,8 +41,9 @@ export class HeaderComponent implements OnInit {
   isMobileMenuOpen: boolean = false;
   isMobile: boolean = false;
   searchQuery: string = '';
- 
-
+  cartCount: number = 0;
+  keyword: string = '';
+  keywordSubject = new Subject<string>();
 
   constructor(
     private userService: UserService,
@@ -49,11 +51,30 @@ export class HeaderComponent implements OnInit {
     private router: Router,
     private cdRef: ChangeDetectorRef, // Đảm bảo cập nhật UI khi cần
     private notificationService: NotificationService,
-    private socketService: NotificationSocketService
+    private socketService: NotificationSocketService,
+    private cartService: CartService
 
-  ) { }
+  ) { 
+    this.keywordSubject.pipe(
+      debounceTime(100)
+    ).subscribe(keyword => {
+      if (keyword.trim().length > 1) {
+        this.router.navigate(['/products'], {
+          queryParams: { keyword: keyword.trim() }
+        });
+      } else {
+        this.router.navigate(['/products']);
+      }
+    });
+    
+  }
 
   ngOnInit() {
+    //this.loadCartCount(); 
+    this.cartService.cartCount$.subscribe(count => {
+      this.cartCount = count;
+      this.cdRef.detectChanges(); // 👈 Đảm bảo cập nhật UI nếu cần
+    });
 
     this.userSub = this.userService.user$.subscribe(user => {
       this.userResponse = user;
@@ -209,13 +230,24 @@ export class HeaderComponent implements OnInit {
        this.isMobileMenuOpen = false; // 👈 Reset khi quay lại desktop
      }
    }
+   loadCartCount(): void {
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    this.cartCount = cart.length;
+  }
 
-   onSearch(): void {
-    if (this.searchQuery.trim()) {
-      console.log('Searching for:', this.searchQuery);
-      // Implement search logic here
+  onSearchSubmit() {
+    const trimmedKeyword = this.keyword.trim();
+    if (trimmedKeyword) {
+      this.router.navigate(['/products'], {
+        queryParams: { keyword: trimmedKeyword }
+      });
     }
   }
 
  
+  
+onKeywordChange(value: string) {
+  this.keywordSubject.next(value);
+}
+  
 }
