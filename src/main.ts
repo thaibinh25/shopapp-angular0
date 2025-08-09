@@ -12,8 +12,8 @@ bootstrapApplication(AppComponent, appConfig).then(appRef => {
     const injector = appRef.injector;
     const translate = injector.get(TranslateService);
   
-    const savedLang = localStorage.getItem('lang') || 'vi';
-    translate.setDefaultLang('vi');
+    const savedLang = localStorage.getItem('lang') || 'ja';
+    translate.setDefaultLang('ja');
     translate.use(savedLang);
   });
 
